@@ -1,12 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-interface InputProps {
-  title?: string;
-  paragraph?: string;
-}
 
-const FormHeader: React.FC<InputProps> = ({ title, paragraph }) => {
+
+const FormHeader = ({ title, paragraph }) => {
   return (
     <>
       <div className='my-10 text-black'>

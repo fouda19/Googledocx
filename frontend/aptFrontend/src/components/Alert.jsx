@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Alert as TailwindAlert, Button } from '@material-tailwind/react';
 import { TfiClose } from 'react-icons/tfi';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
-import PropTypes from 'prop-types';
 
 const Icon = (props) => {
   return props.isError ? (

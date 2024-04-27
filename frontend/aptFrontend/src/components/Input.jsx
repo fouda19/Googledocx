@@ -3,22 +3,22 @@ import { Input as TailwindInput, Typography } from '@material-tailwind/react';
 import React from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 
-interface InputProps {
-  placeholder: string;
-  style?: React.CSSProperties;
-  id?: string;
-  type?: string;
-  className?: string;
-  value?: string;
-  touched?: boolean;
-  error?: boolean;
-  errorMsg?: string;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isEmpty?: boolean;
-  NoCheck?: boolean;
-}
+// interface InputProps {
+//   placeholder: string;
+//   style?: React.CSSProperties;
+//   id?: string;
+//   type?: string;
+//   className?: string;
+//   value?: string;
+//   touched?: boolean;
+//   error?: boolean;
+//   errorMsg?: string;
+//   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+//   isEmpty?: boolean;
+//   NoCheck?: boolean;
+// }
 
-const Input: React.FC<InputProps> = ({
+const Input = ({
   placeholder,
   style,
   id,

@@ -2,11 +2,7 @@ import React, { ReactNode } from 'react';
 import { Spinner } from '@material-tailwind/react';
 import { useAlert } from '../Providers/AlertProvider';
 
-function LoadingProvider(props: {
-  children: ReactNode;
-  isLoading: boolean;
-  error: boolean;
-}) {
+function LoadingProvider(props) {
   const { trigger, setTrigger, setAlertMessage, setIsError } = useAlert();
   React.useEffect(() => {
     console.log(props.error);

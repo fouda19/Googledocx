@@ -8,59 +8,10 @@ import Button from './Button';
 import LoginWithGoogle from './LoginWithGoogle';
 import RoundedButton from './RoundedButton';
 
-type FormSchema = {
-  login: {
-    userName: string;
-    password: string;
-  };
-  signup: {
-    userName: string;
-    password: string;
-    email: string;
-  };
-  recoverUsername: {
-    email: string;
-  };
-  resetPassword: {
-    userName: string;
-    email: string;
-  };
-};
 
-interface InputProps {
-  type?: keyof FormSchema;
-  initVal?: object;
-  title?: string;
-  paragraph?: string;
-  inputArr?: Array<{
-    placeholder: string;
-    type: string;
-    id: string;
-    style?: React.CSSProperties;
-  }>;
-  children: React.ReactElement<
-    JSX.IntrinsicElements[keyof JSX.IntrinsicElements]
-  >;
-  ButtArr?: {
-    type?: 'submit' | 'button' | 'reset' | undefined;
-    className?: string;
-    content?: string;
-    style?: React.CSSProperties;
-  }[];
-  LogWithGoogle?: string;
-  formTitle?: string;
-  formParagraph?: string;
-  handleButton?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  backButton?: string;
-  linkBackButton?: string;
-  handleBackSign?: () => void;
-  errorMessage?: string;
-  HandleOnSubmitFunction?: (values: object) => void;
-  handleModal?: () => void;
-  gender?: boolean;
-}
 
-const MyForm: React.FC<InputProps> = ({
+
+const MyForm= ({
   type,
   initVal,
   title,
@@ -132,14 +83,14 @@ const MyForm: React.FC<InputProps> = ({
                       }}
                       error={
                         !!formik.errors[
-                          inp.id as keyof typeof formik.errors
-                        ] as keyof typeof formik.errors
+                          inp.id
+                        ]
                       }
                       errorMsg={
-                        formik.errors[inp.id as keyof typeof formik.errors]
+                        formik.errors[inp.id]
                       }
                       isEmpty={
-                        !formik.values[inp.id as keyof typeof formik.values]
+                        !formik.values[inp.id ]
                       }
                     />
                   </div>

@@ -20,13 +20,8 @@ function Icon() {
   );
 }
 
-interface AlertProps {
-  //alert data
-  msgg: string;
-  errorr: boolean;
-}
 
-const GenericAlert: React.FC<AlertProps> = (props) => {
+const GenericAlert = (props) => {
   const [open, setOpen] = useState(true);
 
   return (
