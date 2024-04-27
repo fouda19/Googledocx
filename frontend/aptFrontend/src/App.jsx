@@ -1,5 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Documents, Login, Signup, TextEditor } from './pages'
+import Alert from './components/Alert';
 import './assets/css/Layout.css';
 
 function App() {
@@ -7,8 +8,7 @@ function App() {
   return (
     <div className='App'>
       <Router>
-        <OfflineAlert />
-        <NavigationBar />
+        <Alert />
         <Routes>
           <Route path={'/'} element={<Login />} />
           <Route path={'/login'} element={<Login />} />
