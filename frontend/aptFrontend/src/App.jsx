@@ -3,12 +3,14 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 // import Alert from './components/Alert';
 // import './assets/css/Layout.css';
 import Example from './components/Navbar';
+import Doclist from './components/DocumentsList';
 
 function App() {
   // const { status } = useSession();
   return (
     <div className='App'>
       <Example />
+      <Doclist/>
       {/* <Router>
         <Alert />
         <Routes>
