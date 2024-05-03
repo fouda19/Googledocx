@@ -1,13 +1,15 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { Documents, Login, Signup, TextEditor } from './pages'
-import Alert from './components/Alert';
-import './assets/css/Layout.css';
+// import { Documents, Login, Signup, TextEditor } from './pages'
+// import Alert from './components/Alert';
+// import './assets/css/Layout.css';
+import Example from './components/Navbar';
 
 function App() {
-  const { status } = useSession();
+  // const { status } = useSession();
   return (
     <div className='App'>
-      <Router>
+      <Example />
+      {/* <Router>
         <Alert />
         <Routes>
           <Route path={'/'} element={<Login />} />
@@ -22,7 +24,7 @@ function App() {
             element={<Documents />}
           />
         </Routes>
-      </Router>
+      </Router> */}
     </div>
   );
 }
