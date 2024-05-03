@@ -9,15 +9,38 @@ import MenuItem from "@mui/material/MenuItem";
 import React from "react";
 import Typography from "@mui/material/Typography";
 import ArticleIcon from "@mui/icons-material/Article";
+import { useState } from "react";
+import Modal from "./popup";
+import SharePop from "./sharePop";
 
-function DocsCard({ id, fileName, date }) {
+function DocsCard({ id, fileName, date, owner, editorList, viewerList }) {
+  const [popUp, setPopUp] = useState(false);
+  const [sharePop, setSharePop] = useState(false);
+  const currentUser = "me";
+  const isOwner = owner === currentUser;
+  const isEditor = editorList.includes(currentUser);
+  const isViewer = viewerList.includes(currentUser);
+  const flagRename = isOwner || isEditor;
+  const flagDelete = isOwner;
+  const flagShare = isOwner;
   const [anchorEl, setAnchorEl] = React.useState(null);
+
   const handleClick = (event) => {
     console.log("clicked");
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleRename = () => {
+    setPopUp(true);
+    handleClose();
+  };
+
+  const handleShare = () => {
+    setSharePop(true);
+    handleClose();
   };
   return (
     <div
@@ -27,6 +50,7 @@ function DocsCard({ id, fileName, date }) {
       {/* <Icon name="article" size="3xl" color="blue" /> */}
       <ArticleIcon color="primary" />
       <p className="flex-grow pl-5 w-10 pr-10 truncate">{fileName}</p>
+      <p className="flex-grow pl-5 w-10 pr-10 truncate">{owner}</p>
       <p className="pr-12 text-sm italic">
         {date.toLocaleDateString("en-US", {
           year: "numeric",
@@ -34,16 +58,32 @@ function DocsCard({ id, fileName, date }) {
           day: "numeric",
         })}
       </p>
-     
-      <IconButton onClick={handleClick}>
- 
-        <MoreVertIcon />
-      </IconButton>
+      {isViewer ? (
+        <IconButton style={{ pointerEvents: "none" }}>
+          <MoreVertIcon
+            style={{ visibility: "hidden", pointerEvents: "none" }}
+          />
+        </IconButton>
+      ) : (
+        <IconButton onClick={handleClick}>
+          <MoreVertIcon />
+        </IconButton>
+      )}
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-        <MenuItem onClick={handleClose}>Edit</MenuItem>
-        <MenuItem onClick={handleClose}>Delete</MenuItem>
+        {flagRename && <MenuItem onClick={handleRename}>Rename</MenuItem>}
+        {flagDelete && <MenuItem onClick={handleClose}>Delete</MenuItem>}
+        {flagShare && <MenuItem onClick={handleShare}>Share</MenuItem>}
       </Menu>
- 
+
+      {popUp && (
+        <Modal
+          open={popUp}
+          setOpen={setPopUp}
+          type={1}
+          message={"Rename the document"}
+        />
+      )}
+      {sharePop && <SharePop open={sharePop} setOpen={setSharePop} />}
     </div>
   );
 }
