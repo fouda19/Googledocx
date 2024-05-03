@@ -28,35 +28,16 @@ function DocsCard({ id, fileName, date }) {
       <p className="pr-12 text-sm italic">
         {date.toLocaleDateString()} {date.toLocaleTimeString()}
       </p>
-      {/* <Button
-        color="gray"
-        buttonType="link"
-        rounded={true}
-        iconOnly={true}
-        ripple="dark"
-        className="w-20 border-0"
-      >
-        <Icon name="more_vert" size="3xl" /> */}
-      {/* </Button> */}
-      {/* <button class="focus:outline-none">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          stroke="none"
-          class="h-6 w-6 text-gray-500"
-        >
-          <path d="M12 12a2 2 0 11-4 0 2 2 0 014 0zm0 6a2 2 0 11-4 0 2 2 0 014 0zm0-12a2 2 0 11-4 0 2 2 0 014 0z"></path>
-        </svg>
-      </button> */}
+     
       <IconButton onClick={handleClick}>
-        {/* <Typography variant="body1">Menu</Typography> */}
+ 
         <MoreVertIcon />
       </IconButton>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem onClick={handleClose}>Edit</MenuItem>
         <MenuItem onClick={handleClose}>Delete</MenuItem>
       </Menu>
+ 
     </div>
   );
 }

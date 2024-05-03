@@ -4,7 +4,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 // import './assets/css/Layout.css';
 import Example from './components/Navbar';
 import Doclist from './components/DocumentsList';
-import Example from "./components/Navbar";
+
 import DocsCard from "./components/documentCard";
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
     <div className="App">
       <Example />
       <Doclist/>
-      <DocsCard id="1" fileName="Test File" date={new Date()} />
+
       {/* <Router>
         <Alert />
         <Routes>
