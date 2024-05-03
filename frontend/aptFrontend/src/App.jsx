@@ -1,16 +1,19 @@
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 // import { Documents, Login, Signup, TextEditor } from './pages'
 // import Alert from './components/Alert';
 // import './assets/css/Layout.css';
 import Example from './components/Navbar';
 import Doclist from './components/DocumentsList';
+import Example from "./components/Navbar";
+import DocsCard from "./components/documentCard";
 
 function App() {
   // const { status } = useSession();
   return (
-    <div className='App'>
+    <div className="App">
       <Example />
       <Doclist/>
+      <DocsCard id="1" fileName="Test File" date={new Date()} />
       {/* <Router>
         <Alert />
         <Routes>
