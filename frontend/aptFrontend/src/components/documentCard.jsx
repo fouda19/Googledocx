@@ -8,6 +8,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import React from "react";
 import Typography from "@mui/material/Typography";
+import ArticleIcon from "@mui/icons-material/Article";
 
 function DocsCard({ id, fileName, date }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -24,9 +25,14 @@ function DocsCard({ id, fileName, date }) {
       //   onClick={() => router.push(`/doc/${id}`)}
     >
       {/* <Icon name="article" size="3xl" color="blue" /> */}
+      <ArticleIcon color="primary" />
       <p className="flex-grow pl-5 w-10 pr-10 truncate">{fileName}</p>
       <p className="pr-12 text-sm italic">
-        {date.toLocaleDateString()} {date.toLocaleTimeString()}
+        {date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
       </p>
       {/* <Button
         color="gray"
