@@ -2,7 +2,9 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 // import { Documents, Login, Signup, TextEditor } from './pages'
 // import Alert from './components/Alert';
 // import './assets/css/Layout.css';
-import Example from "./components/Navbar";
+import Example from './components/Navbar';
+import Doclist from './components/DocumentsList';
+
 import DocsCard from "./components/documentCard";
 
 function App() {
@@ -10,7 +12,8 @@ function App() {
   return (
     <div className="App">
       <Example />
-      <DocsCard id="1" fileName="Test File" date={new Date()} />
+      <Doclist/>
+
       {/* <Router>
         <Alert />
         <Routes>
