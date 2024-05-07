@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import Validation from '../validate/validate';
 import FormHeader from './FormHeader';
 import Input from './Input';
-import Button from './Button';
-import LoginWithGoogle from './LoginWithGoogle';
+//import Button from './Button';
+//import LoginWithGoogle from './LoginWithGoogle';
 import RoundedButton from './RoundedButton';
 
 

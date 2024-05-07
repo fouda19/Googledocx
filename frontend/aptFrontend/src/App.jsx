@@ -4,15 +4,17 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 // import './assets/css/Layout.css';
 import Example from './components/Navbar';
 import Doclist from './components/DocumentsList';
-
+import Login from "./pages/Login";
 import DocsCard from "./components/documentCard";
-
+import { Navbar } from "@material-tailwind/react";
+import Signup from "./pages/Signup"; 
 function App() {
   // const { status } = useSession();
   return (
     <div className="App">
-      <Example />
-      <Doclist/>
+      <Navbar/>
+      <Login/>
+      {/* <Signup/> */}
 
       {/* <Router>
         <Alert />
