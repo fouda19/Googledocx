@@ -12,10 +12,14 @@ import ArticleIcon from "@mui/icons-material/Article";
 import { useState } from "react";
 import Modal from "./popup";
 import SharePop from "./sharePop";
+import { useMutation } from "react-query";
+import { postRequest } from "../API/API";
 
 function DocsCard({ id, fileName, date, owner, editorList, viewerList }) {
   const [popUp, setPopUp] = useState(false);
   const [sharePop, setSharePop] = useState(false);
+  const [newFilename, setNewFilename] = useState('');
+  const [error, setError] = useState('');
   const currentUser = "me";
   const isOwner = owner === currentUser;
   const isEditor = editorList.includes(currentUser);
@@ -24,7 +28,12 @@ function DocsCard({ id, fileName, date, owner, editorList, viewerList }) {
   const flagDelete = isOwner;
   const flagShare = isOwner;
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const renameReq = useMutation((data) =>
+    postRequest("/backend/documents/rename", data)
+  );
+  const deleteReq = useMutation((data) =>
+    postRequest("/backend/documents/delete", data)
+  );
   const handleClick = (event) => {
     console.log("clicked");
     setAnchorEl(event.currentTarget);
@@ -33,59 +42,105 @@ function DocsCard({ id, fileName, date, owner, editorList, viewerList }) {
     setAnchorEl(null);
   };
 
-  const handleRename = () => {
-    setPopUp(true);
-    handleClose();
-  };
+  const handleDelete = () => {
+    console.log("deleting");
+    deleteReq.mutate({
+      id: id
+    }
+      ,
+      {
+        onSuccess: () => {}
+      }
+    )
 
-  const handleShare = () => {
-    setSharePop(true);
     handleClose();
-  };
-  return (
-    <div
-      className="flex items-center py-4 rounded-lg hover:cursor-pointer hover:bg-gray-100 text-gray-700 text-sm"
+  }
+
+    const handleRename = () => {
+      console.log("renaming");
+      if (newFilename.trim() === "") {
+        // alert("Please enter text before saving.");
+        setError("Please enter text before renaming.");
+        return;
+      }
+      renameReq.mutate({
+        filename: newFilename,
+        id: id
+      }
+        ,
+        {
+          onSuccess: () => {
+            setPopUp(false)
+            setNewFilename('')
+          }
+        }
+      )
+
+      setPopUp(true);
+      handleClose();
+    };
+
+    const handleShare = () => {
+      setSharePop(true);
+      handleClose();
+    };
+    return (
+      <div
+        className="flex items-center py-4 rounded-lg hover:cursor-pointer hover:bg-gray-100 text-gray-700 text-sm"
       //   onClick={() => router.push(`/doc/${id}`)}
-    >
-      {/* <Icon name="article" size="3xl" color="blue" /> */}
-      <ArticleIcon color="primary" />
-      <p className="flex-grow pl-5 w-10 pr-10 truncate">{fileName}</p>
-      <p className="flex-grow pl-5 w-10 pr-10 truncate">{owner}</p>
-      <p className="pr-12 text-sm italic">
-        {date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })}
-      </p>
-      {isViewer ? (
-        <IconButton style={{ pointerEvents: "none" }}>
-          <MoreVertIcon
-            style={{ visibility: "hidden", pointerEvents: "none" }}
+      >
+        {/* <Icon name="article" size="3xl" color="blue" /> */}
+        <ArticleIcon color="primary" />
+        <p className="flex-grow pl-5 w-10 pr-10 truncate">{fileName}</p>
+        <p className="flex-grow pl-5 w-10 pr-10 truncate">{owner}</p>
+        <p className="pr-12 text-sm italic">
+          {date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </p>
+        {isViewer ? (
+          <IconButton style={{ pointerEvents: "none" }}>
+            <MoreVertIcon
+              style={{ visibility: "hidden", pointerEvents: "none" }}
+            />
+          </IconButton>
+        ) : (
+          <IconButton onClick={handleClick}>
+            <MoreVertIcon />
+          </IconButton>
+        )}
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+          {flagRename &&
+            <MenuItem
+              onClick={() => {
+                setPopUp(true)
+                handleClose()
+              }}>Rename
+            </MenuItem>}
+          {flagDelete && <MenuItem onClick={handleDelete}>Delete</MenuItem>}
+          {flagShare && <MenuItem onClick={handleShare}>Share</MenuItem>}
+        </Menu>
+
+        {popUp && (
+          <Modal
+            open={popUp}
+            setOpen={setPopUp}
+            type={1}
+            message={"Rename the document"}
+            error={error}
+            handleClick={handleRename}
+            handleInputChange={(e) => {
+              setNewFilename(e.target.value)
+              setError('')
+            }}
+            input={newFilename}
           />
-        </IconButton>
-      ) : (
-        <IconButton onClick={handleClick}>
-          <MoreVertIcon />
-        </IconButton>
-      )}
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-        {flagRename && <MenuItem onClick={handleRename}>Rename</MenuItem>}
-        {flagDelete && <MenuItem onClick={handleClose}>Delete</MenuItem>}
-        {flagShare && <MenuItem onClick={handleShare}>Share</MenuItem>}
-      </Menu>
+        )}
+        {sharePop && <SharePop open={sharePop} setOpen={setSharePop} />}
+      </div>
+    );
+  }
 
-      {popUp && (
-        <Modal
-          open={popUp}
-          setOpen={setPopUp}
-          type={1}
-          message={"Rename the document"}
-        />
-      )}
-      {sharePop && <SharePop open={sharePop} setOpen={setSharePop} />}
-    </div>
-  );
-}
-
-export default DocsCard;
+  export default DocsCard;

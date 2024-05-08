@@ -11,6 +11,8 @@ import Modal from "./popup";
 import PopUp from "./popup";
 import { Box } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { postRequest } from "../API/API";
+import { useMutation } from "react-query";
 
 const owndedocslist = [
   {
@@ -103,6 +105,9 @@ function Doclist() {
   const [open, setOpen] = useState(true);
   const [popUp, setPopUp] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [filename, setFilename] = useState("");
+  const [errorMessage, setError] = useState("");
+  const postReq = useMutation((data) => postRequest("/backend/documents/newDocument", data));
   const handleClick = (event) => {
     console.log("clicked");
     setAnchorEl(event.currentTarget);
@@ -120,6 +125,23 @@ function Doclist() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleSave = () => {
+    if (filename.trim() === "") {
+      // alert("Please enter text before saving.");
+      setError("Please enter text before saving.");
+      return;
+    }
+    postReq.mutate(({ filename: filename })
+      ,
+      {
+        onSuccess: () => {
+          setPopUp(false)
+          setFilename('')
+        }
+      }
+    );
+
+  }
   return (
     <>
       <div className="flex justify-center">
@@ -136,6 +158,13 @@ function Doclist() {
           setOpen={setPopUp}
           type={0}
           message={"Enter New Document Name"}
+          handleClick={handleSave}
+          handleInputChange={(e) => {
+            setFilename(e.target.value)
+            setError("")
+          }}
+          input={filename}
+          error={errorMessage}
         />
       )}
       <section className="bg-white px-10 md:px-0">

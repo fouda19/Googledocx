@@ -6,24 +6,22 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-export default function PopUp({ open, setOpen, type, message }) {
+// eslint-disable-next-line react/prop-types
+export default function PopUp({ open, setOpen, message, handleClick, handleInputChange, input, error }) {
   // const [open, setOpen] = React.useState(true);
-  const [inputText, setInputText] = React.useState("");
-  const [error, setError] = React.useState("");
-  const handleInputChange = (event) => {
-    setInputText(event.target.value);
-    setError("");
-  };
+  // const [inputText, setInputText] = React.useState("");
+  // const [error, setError] = React.useState("");
+  // const handleInputChange = (event) => {
+  //   setInputText(event.target.value);
+  //   setError("");
+  // };
 
-  const handleSubmit = () => {
-    // TODO handle type
-    if (inputText.trim() === "") {
-      // alert("Please enter text before saving.");
-      setError("Please enter text before saving.");
-      return;
-    }
-    setOpen(false);
-  };
+  // const handleSubmit = () => {
+  //   // TODO handle type
+
+
+  //   setOpen(false);
+  // };
 
   const handleClose = () => {
     setOpen(false);
@@ -43,12 +41,12 @@ export default function PopUp({ open, setOpen, type, message }) {
             type="text"
             fullWidth
             variant="standard"
-            value={inputText}
+            value={input}
             onChange={handleInputChange}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit} color="primary">
+          <Button onClick={handleClick} color="primary">
             Save
           </Button>
           <Button onClick={handleClose} color="secondary">

@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import RoundedButton from './RoundedButton';
 
-const LoginForm = () => {
+const LoginForm = (props) => {
   return (
     <div className="font-roboto">
       <Formik
@@ -13,6 +14,7 @@ const LoginForm = () => {
           password: Yup.string().required('Enter a password'),
         })}
         onSubmit={(values, { setSubmitting }) => {
+          props.handleSubmit(values)
           setTimeout(() => {
             alert(JSON.stringify(values, null, 2));
             setSubmitting(false);
