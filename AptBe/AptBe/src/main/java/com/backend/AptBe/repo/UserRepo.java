@@ -10,9 +10,9 @@ import com.backend.AptBe.model.User;
 @Repository
 public interface UserRepo extends MongoRepository<User,String>{
 
-    Optional<User> getUserByEmail (String email);
-    Optional<User> getUserById (String _id);
+    Optional<User> findByEmail(String email);
+    Optional<User> findById(String _id);
 
-    Boolean doesEmailExist(String email);
-    Boolean doesIdExist(String _id);
+    boolean existsByEmail(String email);
+    boolean existsById(String _id);
 }
