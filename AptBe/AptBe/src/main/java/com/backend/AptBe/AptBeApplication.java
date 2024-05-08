@@ -14,7 +14,7 @@ public class AptBeApplication {
 		SpringApplication.run(AptBeApplication.class, args);
 	}
 
-	@GetMapping("/hello")
+	@GetMapping("/")
 	public String hello() {
 		return "Hello World!";
 	}
