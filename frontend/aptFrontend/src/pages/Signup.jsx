@@ -20,11 +20,11 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function Signup() {
-  const postReq = useMutation(postRequest);
+  const postReq = useMutation((data) => postRequest('/backend/user/signup', data));
   const navigate = useNavigate();
   const handleSubmit = (values) => {
     const { firstName, lastName, email, password, birthDay, birthMonth, birthYear } = values;
-    postReq.mutate(('/backend/user/signup', {
+    postReq.mutate({
       firstName: firstName,
       lastName: lastName,
       email: email,
@@ -32,7 +32,7 @@ export default function Signup() {
       birthDay: birthDay,
       birthMonth: birthMonth,
       birthYear: birthYear
-    }),
+    },
       {
         onSuccess: (data) => {
           saveToken(data.token)
