@@ -14,13 +14,16 @@ import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { Box } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { postRequest } from "../API/API";
+import { useMutation } from "react-query";
 
-export default function SharePop({ open, setOpen }) {
+export default function SharePop({ open, setOpen, id }) {
   // const [open, setOpen] = React.useState(true);
   const [userType, setType] = useState("Viewer");
   const [inputText, setInputText] = React.useState("");
   const [error, setError] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const shareReq = useMutation((data) => postRequest("/backend/documents/share", data));
   const handleInputChange = (event) => {
     setInputText(event.target.value);
     setError("");
@@ -41,7 +44,7 @@ export default function SharePop({ open, setOpen }) {
       setError("Please enter a username before sharing.");
       return;
     }
-    setOpen(false);
+    shareReq.mutate({ email: inputText, type: userType, id: id }, { onSuccess: () => { setOpen(false); } })
   };
 
   const handleClose = () => {

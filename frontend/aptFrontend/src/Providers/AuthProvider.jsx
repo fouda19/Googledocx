@@ -1,8 +1,9 @@
-import React, { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 
-const AuthContext = createContext(token);
+const AuthContext = createContext();
 
-const AuthProvider = (children) => {
+const AuthProvider = (props) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   // useEffect to listen for localStorage changes
@@ -20,8 +21,11 @@ const AuthProvider = (children) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ token }}>{props.children}</AuthContext.Provider>
   );
+};
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,  // Ensure children prop is required
 };
 
 export { AuthContext, AuthProvider };

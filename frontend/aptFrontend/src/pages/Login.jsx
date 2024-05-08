@@ -12,9 +12,25 @@ import axios from "axios";
 //import MyForm from "../../components/Form";
 import LoginForm from '../components/LoginForm';
 import googleLogo from '../assets/google-logo.png';
-
+import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { saveToken } from '../hooks/auth/useSession';
+import { postRequest } from '../API/API';
 
 export default function Login() {
+
+  const postReq = useMutation(postRequest);
+  const navigate = useNavigate();
+  const handleSubmit = (values) => {
+    const { email, password } = values;
+    postReq.mutate(('/backend/user/login', { email: email, password: password }),
+      {
+        onSuccess: (data) => {
+          saveToken(data.token)
+          navigate('/documents')
+        }
+      });
+  }
 
   return (
     <>
@@ -22,14 +38,14 @@ export default function Login() {
         <div className="bg-white p-8 rounded-xl" style={{ width: '1000px', height: '508px' }}>
           <div className='flex flex-col justify-center'>
             <div className='flex flex-col items-start'>
-              <img  src={googleLogo} alt="Google Logo" className='mb-2 w-16 h-16' />
+              <img src={googleLogo} alt="Google Logo" className='mb-2 w-16 h-16' />
               <div>
                 <h2 className="text-2.25rem mb-4 open-sans">Sign in</h2>
                 <h2 className="text-1.25rem text-gray-500 mb-8">Use your Google account</h2>
               </div>
             </div>
           </div>
-          <LoginForm />
+          <LoginForm handleSubmit={handleSubmit} />
         </div>
       </div>
     </>

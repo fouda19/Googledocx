@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import RoundedButton from './RoundedButton';
 
-const SignUpForm = () => {
+const SignUpForm = (props) => {
 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
@@ -32,6 +33,7 @@ const SignUpForm = () => {
   // Handle form submission
   const handleSubmit = (values, { setSubmitting }) => {
       // hena el api call 
+      props.handleSubmit(values);
       console.log(values);
       setSubmitting(false);
   };

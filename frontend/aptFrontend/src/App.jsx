@@ -1,38 +1,46 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-// import { Documents, Login, Signup, TextEditor } from './pages'
+import { Documents, Login, Signup, TextEditor } from './pages'
 // import Alert from './components/Alert';
 // import './assets/css/Layout.css';
-import Example from './components/Navbar';
-import Doclist from './components/DocumentsList';
-import Login from "./pages/Login";
-import DocsCard from "./components/documentCard";
-import { Navbar } from "@material-tailwind/react";
-import Signup from "./pages/Signup"; 
+import Navbar from './components/Navbar';
+// import Doclist from './components/DocumentsList';
+// import Login from "./pages/Login";
+// import DocsCard from "./components/documentCard";
+// import Signup from "./pages/Signup"; 
+import { QueryClientProvider, QueryClient } from 'react-query'
+
 function App() {
   // const { status } = useSession();
+  const queryClient = new QueryClient()
+
   return (
+    <QueryClientProvider client={queryClient}>
+
     <div className="App">
-      <Navbar/>
-      <Login/>
+      {/* <Navbar/> */}
+      {/* <Login/> */}
       {/* <Signup/> */}
 
-      {/* <Router>
-        <Alert />
+      <Router>
+      <Navbar />
+        {/* <Alert /> */}
         <Routes>
           <Route path={'/'} element={<Login />} />
           <Route path={'/login'} element={<Login />} />
           <Route path={'/signup'} element={<Signup />} />
           <Route
-            path={'/texteditor'}
+            path={'/texteditor/:documentId'}
             element={<TextEditor />}
           />
           <Route
-            path={'/texteditor'}
+            path={'/documents'}
             element={<Documents />}
           />
         </Routes>
-      </Router> */}
+      </Router>
     </div>
+    </QueryClientProvider>
+
   );
 }
 

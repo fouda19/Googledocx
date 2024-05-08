@@ -1,8 +1,10 @@
-import React from 'react'
+import Editor from '../components/Editor'
 
 const TextEditor = () => {
   return (
-    <div>TextEditor</div>
+    <div className='h-[calc(94vh-var(--navbar-height))]'>
+      <Editor />
+    </div>
   )
 }
 

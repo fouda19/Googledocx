@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import Alert from '../components/Alert';
 
 const AlertContext = createContext();
-
+ 
 console.log('AlertContext', AlertContext);
 export const useAlert = () => useContext(AlertContext);
 
-export const AlertProvider = (children) => {
+export const AlertProvider = (props) => {
   const [alertMessage, setAlertMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [trigger, setTrigger] = useState(false);
@@ -21,7 +21,7 @@ export const AlertProvider = (children) => {
         setMessage={setAlertMessage}
         trigger={trigger}
       />
-      {children}
+      {props.children}
     </AlertContext.Provider>
   );
 };

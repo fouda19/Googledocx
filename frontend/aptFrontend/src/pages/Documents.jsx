@@ -1,8 +1,9 @@
-import React from 'react'
-
+import Doclist from "../components/DocumentsList"
 const Documents = () => {
   return (
-    <div>Documents</div>
+    <div>  
+      <Doclist />
+    </div>
   )
 }
 
