@@ -11,18 +11,20 @@ import java.util.Date;
 
 public class Token {
 
-    @Value("${jwtSecret}")
-    private static String  secret;
     
-    @Value("${jwtExpirationMs}")
-    private static long expirationMs;
+    private static final String secret = "81aad74d40510bfa195c82e414f41b716129c521da4f4e32aa4421408abb8ff5fmahagaabdomidofoudamohysetsuggestsortkindofrmabayr81aad74d40510bfa195c82e414f41b716129c521da4f4e32aa4421408abb8ff5";
+    private static final long expirationMs = 86400000;
+    
 
-    private SecretKey getTempKey() {
+
+    private static SecretKey getTempKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(String _id)
     {
+        System.out.println(secret);
+        System.out.println("ANA SECRET");
         return Jwts.builder()
         .setSubject(_id)
         .setIssuedAt(new Date())
