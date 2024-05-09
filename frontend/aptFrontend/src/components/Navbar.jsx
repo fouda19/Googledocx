@@ -20,12 +20,13 @@ import useSession from "../hooks/auth/useSession";
 import { useMutation } from "react-query";
 import { postRequest } from "../API/API";
 
-
 export default function Navbar() {
   // const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate()
-  const { status } = useSession()
-  const postReq = useMutation((data) => postRequest('/backend/user/logout', data));
+  const navigate = useNavigate();
+  const { status } = useSession();
+  const postReq = useMutation((data) =>
+    postRequest("/backend/user/logout", data)
+  );
   return (
     <header className="bg-white h-[var(--navbar-height)]">
       <nav
@@ -36,21 +37,30 @@ export default function Navbar() {
           <ArticleIcon color="primary" />
           Google Docx
         </div>
-        <div className="flex">
-        </div>
+        <div className="flex"></div>
         <div className=" flex justify-end">
-          {status === 'authenticated' ? (
-            <button onClick={() => {
-              postReq.mutate({})
-              localStorage.clear()
-              navigate('/')
-            }} className=" cursor-pointer text-sm font-semibold leading-6 text-gray-900">
+          {status === "authenticated" ? (
+            <button
+              onClick={() => {
+                postReq.mutate({});
+                console.log("logout");
+                localStorage.clear();
+                navigate("/");
+              }}
+              className=" cursor-pointer text-sm font-semibold leading-6 text-gray-900"
+            >
               Log Out
-            </button>) : (<button onClick={() => {
-              navigate('/')
-            }} className=" cursor-pointer text-sm font-semibold leading-6 text-gray-900">
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                navigate("/");
+              }}
+              className=" cursor-pointer text-sm font-semibold leading-6 text-gray-900"
+            >
               Log in
-            </button>)}
+            </button>
+          )}
         </div>
       </nav>
       {/* <Dialog
@@ -59,7 +69,6 @@ export default function Navbar() {
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
       > */}
-
     </header>
   );
 }
