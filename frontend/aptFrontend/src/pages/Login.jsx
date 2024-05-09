@@ -19,11 +19,11 @@ import { postRequest } from '../API/API';
 
 export default function Login() {
 
-  const postReq = useMutation(postRequest);
+  const postReq = useMutation((data) => postRequest('/backend/user/login', data));
   const navigate = useNavigate();
   const handleSubmit = (values) => {
     const { email, password } = values;
-    postReq.mutate(('/backend/user/login', { email: email, password: password }),
+    postReq.mutate({ email: email, password: password },
       {
         onSuccess: (data) => {
           saveToken(data.token)

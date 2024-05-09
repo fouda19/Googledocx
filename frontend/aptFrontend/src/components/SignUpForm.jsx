@@ -21,7 +21,7 @@ const SignUpForm = (props) => {
       .min(8, "Password must be at least 8 characters")
       .max(30, "Password must be at most 30 characters"),
     birthDay: Yup.number()
-      .required("Day is required")
+      .required("Day is required").default(1)
       .test("birthDay", "Day is invalid", function (value) {
         const { birthMonth } = this.parent;
         if (birthMonth === 2) {
@@ -32,8 +32,8 @@ const SignUpForm = (props) => {
           return value <= 31;
         }
       }),
-    birthMonth: Yup.number().required("Month is required"),
-    birthYear: Yup.number().required("Year is required"),
+    birthMonth: Yup.number().required("Month is required").default(1),
+    birthYear: Yup.number().required("Year is required").default(1900),
   });
 
   // Handle form submission

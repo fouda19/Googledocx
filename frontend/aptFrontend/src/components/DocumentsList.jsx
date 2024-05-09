@@ -11,8 +11,9 @@ import Modal from "./popup";
 import PopUp from "./popup";
 import { Box } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import { postRequest } from "../API/API";
-import { useMutation } from "react-query";
+import { fetchRequest, postRequest } from "../API/API";
+import { useMutation, useQuery } from "react-query";
+import { Link } from "react-router-dom";
 
 const owndedocslist = [
   {
@@ -102,12 +103,14 @@ const allDocs = owndedocslist.concat(notowneddocs);
 
 function Doclist() {
   const [sortby, setsort] = useState("Owned by me");
+  const [sortParam, setSortParam] = useState("me");
   const [open, setOpen] = useState(true);
   const [popUp, setPopUp] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [filename, setFilename] = useState("");
   const [errorMessage, setError] = useState("");
   const postReq = useMutation((data) => postRequest("/backend/documents/newDocument", data));
+  const { data, isLoading, isError } = useQuery(["documents", sortParam], () => fetchRequest(`/backend/documents/${sortParam}`))
   const handleClick = (event) => {
     console.log("clicked");
     setAnchorEl(event.currentTarget);
@@ -116,6 +119,7 @@ function Doclist() {
     // Update state based on the sortType
     // For example: setSort(sortType);
     setsort(sortType);
+    setSortParam(sortType === "Owned by me" ? "me" : sortType === "Owned by others" ? "others" : "all");
     // Close the menu
     handleClose();
   };
@@ -203,47 +207,23 @@ function Doclist() {
             {/* <p className="mr-12">Date created</p> */}
           </div>
 
-          {sortby === "Owned by me" ? (
-            <div>
-              {owndedocslist.map((doc) => (
-                <DocsCard
-                  id={doc.id}
-                  fileName={doc.filename}
-                  date={doc.date}
-                  owner={doc.owner}
-                  editorList={doc.editorList}
-                  viewerList={doc.viewerList}
-                />
-              ))}
-            </div>
-          ) : sortby === "Owned by others" ? (
-            <div>
-              {" "}
-              {notowneddocs.map((doc) => (
-                <DocsCard
-                  id={doc.id}
-                  fileName={doc.filename}
-                  date={doc.date}
-                  owner={doc.owner}
-                  editorList={doc.editorList}
-                  viewerList={doc.viewerList}
-                />
-              ))}
-            </div>
-          ) : (
-            <div>
-              {allDocs.map((doc) => (
-                <DocsCard
-                  id={doc.id}
-                  fileName={doc.filename}
-                  date={doc.date}
-                  owner={doc.owner}
-                  editorList={doc.editorList}
-                  viewerList={doc.viewerList}
-                />
-              ))}
-            </div>
-          )}
+          <div>
+            {owndedocslist.map((doc) => (
+
+              <DocsCard
+                key={doc.id}
+                id={doc.id}
+                fileName={doc.filename}
+                date={doc.date}
+                owner={doc.owner}
+                editorList={doc.editorList}
+                viewerList={doc.viewerList}
+              />
+
+            ))}
+          </div>
+
+
         </div>
       </section>
     </>
