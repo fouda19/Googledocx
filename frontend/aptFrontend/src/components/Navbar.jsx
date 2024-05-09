@@ -43,10 +43,9 @@ export default function Navbar() {
             }} className=" cursor-pointer text-sm font-semibold leading-6 text-gray-900">
               Log Out
             </button>) : (<button onClick={() => {
-              localStorage.clear()
               navigate('/')
             }} className=" cursor-pointer text-sm font-semibold leading-6 text-gray-900">
-              Log Out
+              Log in
             </button>)}
         </div>
       </nav>
