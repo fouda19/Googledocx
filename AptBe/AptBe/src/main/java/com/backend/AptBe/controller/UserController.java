@@ -42,9 +42,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody User user)
+    public ResponseEntity<?> login(@RequestBody User user)
     {
         
+                System.out.println("ANAAA");
                 String token = userService.logIn(user);
                 if(token != null)
                 {

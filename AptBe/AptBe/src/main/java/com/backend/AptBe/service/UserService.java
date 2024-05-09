@@ -76,6 +76,7 @@ public class UserService {
             String token = tokenObj.generateToken(newUser.get_id());
             System.out.println(token);
             user.addToken(token);
+            userRepo.save(user);
             return token;
         } catch (Exception e) {
             System.out.println("ANA NULL");
@@ -86,14 +87,17 @@ public class UserService {
     public String logIn (User user)
     {
         Optional<User> userOptional = userRepo.findByEmail(user.getEmail());
+        System.out.println(user.getEmail());
         if(userOptional.isPresent())
         {
             User userFromDb = userOptional.get();
             if(isPasswordMatch(user.getPassword(), userFromDb.getPassword()))
             {
+                System.out.println("HERE");
                 try {
                     Token tokenObj = new Token();
                     String token = tokenObj.generateToken(userFromDb.get_id());
+                    System.out.println(token);
                     userFromDb.addToken(token);
                     userRepo.save(userFromDb);
                     return token;

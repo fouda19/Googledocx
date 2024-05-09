@@ -1,12 +1,10 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import RoundedButton from './RoundedButton';
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import RoundedButton from "./RoundedButton";
 
 const SignUpForm = (props) => {
-
-
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().required("First name is required"),
     lastName: Yup.string().required("Last name is required"),
@@ -21,7 +19,8 @@ const SignUpForm = (props) => {
       .min(8, "Password must be at least 8 characters")
       .max(30, "Password must be at most 30 characters"),
     birthDay: Yup.number()
-      .required("Day is required").default(1)
+      .required("Day is required")
+      .default(1)
       .test("birthDay", "Day is invalid", function (value) {
         const { birthMonth } = this.parent;
         if (birthMonth === 2) {
@@ -38,11 +37,10 @@ const SignUpForm = (props) => {
 
   // Handle form submission
   const handleSubmit = (values, { setSubmitting }) => {
-      // hena el api call 
-      props.handleSubmit(values);
-      console.log(values);
-      setSubmitting(false);
-
+    // hena el api call
+    props.handleSubmit(values);
+    console.log(values);
+    setSubmitting(false);
   };
 
   return (
@@ -55,9 +53,9 @@ const SignUpForm = (props) => {
             confirmPassword: "",
             firstName: "",
             lastName: "",
-            birthDay: "",
-            birthMonth: "",
-            birthYear: "",
+            birthDay: "1",
+            birthMonth: "1",
+            birthYear: "1900",
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
