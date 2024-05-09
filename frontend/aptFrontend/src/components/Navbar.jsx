@@ -17,12 +17,15 @@ import {
 } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import useSession from "../hooks/auth/useSession";
+import { useMutation } from "react-query";
+import { postRequest } from "../API/API";
 
 
 export default function Navbar() {
   // const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate()
   const { status } = useSession()
+  const postReq = useMutation((data) => postRequest('/backend/user/logout', data));
   return (
     <header className="bg-white h-[var(--navbar-height)]">
       <nav
@@ -38,15 +41,15 @@ export default function Navbar() {
         <div className=" flex justify-end">
           {status === 'authenticated' ? (
             <button onClick={() => {
+              postReq.mutate({})
               localStorage.clear()
               navigate('/')
             }} className=" cursor-pointer text-sm font-semibold leading-6 text-gray-900">
               Log Out
             </button>) : (<button onClick={() => {
-              localStorage.clear()
               navigate('/')
             }} className=" cursor-pointer text-sm font-semibold leading-6 text-gray-900">
-              Log Out
+              Log in
             </button>)}
         </div>
       </nav>
