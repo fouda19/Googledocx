@@ -36,12 +36,7 @@ public class UserService {
     {
         return userRepo.existsById(_id);
     }
-
-    public List<User> getAllUsers()
-    {
-        return userRepo.findAll();
-    }
-
+    
     public boolean isPasswordMatch(String rawPassword, String hashedPassword) {
         return BCrypt.checkpw(rawPassword, hashedPassword);
     }
@@ -67,7 +62,50 @@ public class UserService {
         return false;
     }
 
-    public Boolean removeToken(String token)
+    
+
+    public String signUp (User user)
+    {
+        try {
+            System.out.println("HERE");
+            
+
+            Token tokenObj = new Token();
+            User newUser = userRepo.save(user);
+            System.out.println(newUser.get_id());
+            String token = tokenObj.generateToken(newUser.get_id());
+            System.out.println(token);
+            user.addToken(token);
+            return token;
+        } catch (Exception e) {
+            System.out.println("ANA NULL");
+            return null;
+        }
+    }
+
+    public String logIn (User user)
+    {
+        Optional<User> userOptional = userRepo.findByEmail(user.getEmail());
+        if(userOptional.isPresent())
+        {
+            User userFromDb = userOptional.get();
+            if(isPasswordMatch(user.getPassword(), userFromDb.getPassword()))
+            {
+                try {
+                    Token tokenObj = new Token();
+                    String token = tokenObj.generateToken(userFromDb.get_id());
+                    userFromDb.addToken(token);
+                    userRepo.save(userFromDb);
+                    return token;
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Boolean logOut (String token)
     {
         Token tokenObj = new Token();
         String _id = tokenObj.getIdFromToken(token);
@@ -84,15 +122,5 @@ public class UserService {
             }
         }
         return false;
-    }
-
-    public User signUp (User user)
-    {
-        try {
-            userRepo.save(user);
-            return user;
-        } catch (Exception e) {
-            return null;
-        }
     }
 }

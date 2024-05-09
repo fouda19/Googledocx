@@ -8,6 +8,7 @@ import com.backend.AptBe.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import com.backend.AptBe.model.User;
 
 @RestController
@@ -24,8 +25,51 @@ public class UserController {
             return ResponseEntity.badRequest().body("Email already exists");
         }
         user.setPassword(userService.encodePassword(user.getPassword()));
-        userService.signUp(user);
-        return ResponseEntity.ok("User added successfully");
+        String token = userService.signUp(user);
+        System.out.println(token);
+        System.out.println("ANAAA");
+        if(token != null)
+        {
+            
+            return ResponseEntity.ok()
+                    .header("Authorization", token)
+                    .body("User added successfully");
+        }
+        else
+        {
+            return ResponseEntity.badRequest().body("User could not be added");
+        }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody User user)
+    {
+        
+                String token = userService.logIn(user);
+                if(token != null)
+                {
+                    return ResponseEntity.ok()
+                            .header("Authorization", token)
+                            .body("User logged in successfully");
+                }
+                else
+                {
+                    return ResponseEntity.badRequest().body("User could not be logged in please check your credentials");
+                }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader(value="Authorization") String token)
+    {
+        if (userService.logOut(token))
+        {
+            return ResponseEntity.ok().body("User logged out successfully");
+        }
+        else
+        {
+            return ResponseEntity.badRequest().body("User could not log out");
+        }
+    }
+    
     
 }
