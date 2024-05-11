@@ -16,14 +16,15 @@ import {
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
-import useSession from "../hooks/auth/useSession";
+// import useSession from "../hooks/auth/useSession";
 import { useMutation } from "react-query";
 import { postRequest } from "../API/API";
+import { removeToken } from "../hooks/auth/useSession";
 
 export default function Navbar() {
   // const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const { status } = useSession();
+  // const { status } = useSession();
   const postReq = useMutation((data) =>
     postRequest("/backend/user/logout", data)
   );
@@ -39,12 +40,18 @@ export default function Navbar() {
         </div>
         <div className="flex"></div>
         <div className=" flex justify-end">
-          {status === "authenticated" ? (
+          {localStorage.getItem("token") ? (
             <button
               onClick={() => {
-                postReq.mutate({});
+                postReq.mutate(
+                  {},
+                  {
+                    onSuccess: () => {
+                      removeToken();
+                    },
+                  }
+                );
                 console.log("logout");
-                localStorage.clear();
                 navigate("/");
               }}
               className=" cursor-pointer text-sm font-semibold leading-6 text-gray-900"

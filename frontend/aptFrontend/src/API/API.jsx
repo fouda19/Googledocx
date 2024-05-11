@@ -116,6 +116,7 @@ const patchRequest = async (newSettings, endPoint) => {
 const postRequest = async (endPoint, data) => {
   try {
     console.log("data", data);
+    console.log("Local Storage", localStorage.getItem("token"));
     const response = await axios.post(endPoint, data, {
       headers: {
         "Content-Type": "application/json",

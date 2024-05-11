@@ -15,92 +15,6 @@ import { fetchRequest, postRequest } from "../API/API";
 import { useMutation, useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
-const owndedocslist = [
-  {
-    id: "1",
-    filename: "file1.docx",
-    date: new Date("2016-05-02"),
-    owner: "me",
-    editorList: ["fouda", "mido"],
-    viewerList: ["ahmed", "khaled"],
-  },
-  {
-    id: "2",
-    filename: "file2.docx",
-    date: new Date("2016-05-03"),
-    owner: "me",
-    editorList: ["fouda", "mido"],
-    viewerList: ["ahmed", " khaled"],
-  },
-  {
-    id: "3",
-    filename: "file3.docx",
-    date: new Date("2016-05-04"),
-    owner: "me",
-    editorList: ["fouda", " mido"],
-    viewerList: ["ahmed", "khaled"],
-  },
-  {
-    id: "4",
-    filename: "file4.docx",
-    date: new Date("2016-05-05"),
-    owner: "me",
-    editorList: ["fouda", "mido"],
-    viewerList: ["ahmed", "khaled"],
-  },
-  {
-    id: "5",
-    filename: "file5.docx",
-    date: new Date("2016-05-06"),
-    owner: "me",
-    editorList: ["fouda", "mido"],
-    viewerList: ["ahmed", "khaled"],
-  },
-];
-const notowneddocs = [
-  {
-    id: "1",
-    filename: "hagatanya.docx",
-    date: new Date("2016-05-02"),
-    owner: "Mido",
-    editorList: ["me", "fouda"],
-    viewerList: ["ahmed", "khaled"],
-  },
-  {
-    id: "2",
-    filename: "file2.docx",
-    date: new Date("2016-05-03"),
-    owner: "Fouda",
-    editorList: ["mido"],
-    viewerList: ["ahmed", "me"],
-  },
-  {
-    id: "3",
-    filename: "file3.docx",
-    date: new Date("2016-05-04"),
-    owner: "Mido",
-    editorList: ["fouda", "me"],
-    viewerList: ["ahmed", "khaled"],
-  },
-  {
-    id: "4",
-    filename: "hagatanya.docx",
-    date: new Date("2016-05-05"),
-    owner: "Fouda",
-    editorList: ["mido"],
-    viewerList: ["ahmed", "me"],
-  },
-  {
-    id: "5",
-    filename: "hagatanya.docx",
-    date: new Date("2016-05-06"),
-    owner: "Mido",
-    editorList: ["fouda", "me"],
-    viewerList: ["ahmed", " khaled"],
-  },
-];
-const allDocs = owndedocslist.concat(notowneddocs);
-
 function Doclist() {
   const [sortby, setsort] = useState("Owned by me");
   const [sortParam, setSortParam] = useState("me");
@@ -109,8 +23,15 @@ function Doclist() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [filename, setFilename] = useState("");
   const [errorMessage, setError] = useState("");
-  const postReq = useMutation((data) => postRequest("/backend/documents/newDocument", data));
-  const { data, isLoading, isError } = useQuery(["documents", sortParam], () => fetchRequest(`/backend/documents/${sortParam}`))
+  const postReq = useMutation((data) =>
+    postRequest("/backend/documents/newDocument", data)
+  );
+  const { data, isLoading, isError, isSuccess } = useQuery(
+    ["documents", sortParam],
+    () => fetchRequest(`/backend/documents/${sortParam}`)
+  );
+  console.log(data?.data);
+  console.log("AKAKKAKAAKAKKAKAAKAKAKAK");
   const handleClick = (event) => {
     console.log("clicked");
     setAnchorEl(event.currentTarget);
@@ -119,7 +40,13 @@ function Doclist() {
     // Update state based on the sortType
     // For example: setSort(sortType);
     setsort(sortType);
-    setSortParam(sortType === "Owned by me" ? "me" : sortType === "Owned by others" ? "others" : "all");
+    setSortParam(
+      sortType === "Owned by me"
+        ? "me"
+        : sortType === "Owned by others"
+        ? "others"
+        : "all"
+    );
     // Close the menu
     handleClose();
   };
@@ -135,17 +62,13 @@ function Doclist() {
       setError("Please enter text before saving.");
       return;
     }
-    postReq.mutate(({ filename: filename })
-      ,
-      {
-        onSuccess: () => {
-          setPopUp(false)
-          setFilename('')
-        }
-      }
-    );
-
-  }
+    postReq.mutate(filename, {
+      onSuccess: () => {
+        setPopUp(false);
+        setFilename("");
+      },
+    });
+  };
   return (
     <>
       <div className="flex justify-center">
@@ -164,8 +87,8 @@ function Doclist() {
           message={"Enter New Document Name"}
           handleClick={handleSave}
           handleInputChange={(e) => {
-            setFilename(e.target.value)
-            setError("")
+            setFilename(e.target.value);
+            setError("");
           }}
           input={filename}
           error={errorMessage}
@@ -208,22 +131,31 @@ function Doclist() {
           </div>
 
           <div>
-            {owndedocslist.map((doc) => (
-
-              <DocsCard
-                key={doc.id}
-                id={doc.id}
-                fileName={doc.filename}
-                date={doc.date}
-                owner={doc.owner}
-                editorList={doc.editorList}
-                viewerList={doc.viewerList}
-              />
-
-            ))}
+            {isSuccess &&
+              data?.data.map((doc) => (
+                <DocsCard
+                  key={doc._id}
+                  id={doc._id}
+                  fileName={doc.name}
+                  date={doc.creationDate}
+                  owner={doc.owner.firstName + " " + doc.owner.lastName}
+                />
+              ))}
           </div>
-
-
+          {/* <div>
+            {isSuccess &&
+              data.data.map((doc) => (
+                <DocsCard
+                  key={doc._id}
+                  id={doc._id}
+                  fileName={doc.name}
+                  date={doc.creationDate}
+                  owner={doc.owner}
+                  editorList={doc.editors}
+                  viewerList={doc.viewers}
+                />
+              ))}
+          </div> */}
         </div>
       </section>
     </>

@@ -15,19 +15,27 @@ import SharePop from "./sharePop";
 import { useMutation } from "react-query";
 import { postRequest } from "../API/API";
 import { useNavigate } from "react-router-dom";
-
-function DocsCard({ id, fileName, date, owner, editorList, viewerList }) {
+import moment from "moment";
+function DocsCard(props) {
+  const date = moment(props.date, "ddd MMM DD HH:mm:ss zzz YYYY");
   const [popUp, setPopUp] = useState(false);
   const [sharePop, setSharePop] = useState(false);
-  const [newFilename, setNewFilename] = useState('');
-  const [error, setError] = useState('');
-  const currentUser = "me";
-  const isOwner = owner === currentUser;
-  const isEditor = editorList.includes(currentUser);
-  const isViewer = viewerList.includes(currentUser);
-  const flagRename = isOwner || isEditor;
-  const flagDelete = isOwner;
-  const flagShare = isOwner;
+  const [newFilename, setNewFilename] = useState("");
+  const [error, setError] = useState("");
+  // const currentUser = "me";
+  // const isOwner = owner === currentUser;
+  // const isEditor = editorList.includes(currentUser);
+  // const isViewer = viewerList.includes(currentUser);
+  // const flagRename = isOwner || isEditor;
+  // const flagDelete = isOwner;
+  // const flagShare = isOwner;
+  const flagRename = true;
+  const flagDelete = true;
+  const flagShare = true;
+  const isViewer = false;
+  const isOwner = true;
+  const isEditor = true;
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const renameReq = useMutation((data) =>
     postRequest("/backend/documents/rename", data)
@@ -35,7 +43,7 @@ function DocsCard({ id, fileName, date, owner, editorList, viewerList }) {
   const deleteReq = useMutation((data) =>
     postRequest("/backend/documents/delete", data)
   );
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleClick = (event) => {
     console.log("clicked");
     setAnchorEl(event.currentTarget);
@@ -46,17 +54,12 @@ function DocsCard({ id, fileName, date, owner, editorList, viewerList }) {
 
   const handleDelete = () => {
     console.log("deleting");
-    deleteReq.mutate({
-      id: id
-    }
-      ,
-      {
-        onSuccess: () => { }
-      }
-    )
+    deleteReq.mutate(props.id, {
+      onSuccess: () => {},
+    });
 
     handleClose();
-  }
+  };
 
   const handleRename = () => {
     console.log("renaming");
@@ -65,18 +68,18 @@ function DocsCard({ id, fileName, date, owner, editorList, viewerList }) {
       setError("Please enter text before renaming.");
       return;
     }
-    renameReq.mutate({
-      filename: newFilename,
-      id: id
-    }
-      ,
+    renameReq.mutate(
+      {
+        filename: newFilename,
+        id: props.id,
+      },
       {
         onSuccess: () => {
-          setPopUp(false)
-          setNewFilename('')
-        }
+          setPopUp(false);
+          setNewFilename("");
+        },
       }
-    )
+    );
 
     setPopUp(true);
     handleClose();
@@ -89,19 +92,13 @@ function DocsCard({ id, fileName, date, owner, editorList, viewerList }) {
   return (
     <div
       className="flex items-center py-4 rounded-lg hover:cursor-pointer hover:bg-gray-100 text-gray-700 text-sm"
-      onClick={() => navigate(`/texteditor/${id}`)}
+      onClick={() => navigate(`/texteditor/${props.id}`)}
     >
       {/* <Icon name="article" size="3xl" color="blue" /> */}
       <ArticleIcon color="primary" />
-      <p className="flex-grow pl-5 w-10 pr-10 truncate">{fileName}</p>
-      <p className="flex-grow pl-5 w-10 pr-10 truncate">{owner}</p>
-      <p className="pr-12 text-sm italic">
-        {date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })}
-      </p>
+      <p className="flex-grow pl-5 w-10 pr-10 truncate">{props.fileName}</p>
+      <p className="flex-grow pl-5 w-10 pr-10 truncate">{props.owner}</p>
+      <p className="pr-12 text-sm italic">{date.format("DD/MM/YYYY")}</p>
       {isViewer ? (
         <IconButton style={{ pointerEvents: "none" }}>
           <MoreVertIcon
@@ -109,21 +106,54 @@ function DocsCard({ id, fileName, date, owner, editorList, viewerList }) {
           />
         </IconButton>
       ) : (
-        <IconButton onClick={(e)=>{ handleClick(e); e.stopPropagation(); }}>
+        <IconButton
+          onClick={(e) => {
+            handleClick(e);
+            e.stopPropagation();
+          }}
+        >
           <MoreVertIcon />
         </IconButton>
       )}
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose} onClick={(e) => { e.stopPropagation() }}>
-        {flagRename &&
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        {flagRename && (
           <MenuItem
             onClick={(e) => {
-              setPopUp(true)
-              handleClose()
-              e.stopPropagation()
-            }}>Rename
-          </MenuItem>}
-        {flagDelete && <MenuItem onClick={(e) => { handleDelete(); e.stopPropagation(); }}>Delete</MenuItem>}
-        {flagShare && <MenuItem onClick={(e) => { handleShare(); e.stopPropagation(); }}>Share</MenuItem>}
+              setPopUp(true);
+              handleClose();
+              e.stopPropagation();
+            }}
+          >
+            Rename
+          </MenuItem>
+        )}
+        {flagDelete && (
+          <MenuItem
+            onClick={(e) => {
+              handleDelete();
+              e.stopPropagation();
+            }}
+          >
+            Delete
+          </MenuItem>
+        )}
+        {flagShare && (
+          <MenuItem
+            onClick={(e) => {
+              handleShare();
+              e.stopPropagation();
+            }}
+          >
+            Share
+          </MenuItem>
+        )}
       </Menu>
 
       {popUp && (
@@ -135,8 +165,8 @@ function DocsCard({ id, fileName, date, owner, editorList, viewerList }) {
           error={error}
           handleClick={handleRename}
           handleInputChange={(e) => {
-            setNewFilename(e.target.value)
-            setError('')
+            setNewFilename(e.target.value);
+            setError("");
           }}
           input={newFilename}
         />

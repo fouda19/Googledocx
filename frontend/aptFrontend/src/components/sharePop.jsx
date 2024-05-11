@@ -23,17 +23,19 @@ export default function SharePop({ open, setOpen, id }) {
   const [inputText, setInputText] = React.useState("");
   const [error, setError] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const shareReq = useMutation((data) => postRequest("/backend/documents/share", data));
+  const shareReqView = useMutation((data) =>
+    postRequest(`/backend/documents/shareView/${id}`, data)
+  );
+  const shareReqEdit = useMutation((data) =>
+    postRequest(`/backend/documents/shareEdit/${id}`, data)
+  );
   const handleInputChange = (event) => {
     setInputText(event.target.value);
     setError("");
   };
 
   const handleMenuItemClick = (sortType) => {
-    // Update state based on the sortType
-    // For example: setSort(sortType);
     setType(sortType);
-    // Close the menu
     handleClose();
   };
 
@@ -44,7 +46,25 @@ export default function SharePop({ open, setOpen, id }) {
       setError("Please enter a username before sharing.");
       return;
     }
-    shareReq.mutate({ email: inputText, type: userType, id: id }, { onSuccess: () => { setOpen(false); } })
+    if (userType === "Viewer") {
+      shareReqView.mutate(
+        { email: inputText },
+        {
+          onSuccess: () => {
+            setOpen(false);
+          },
+        }
+      );
+    } else {
+      shareReqEdit.mutate(
+        { email: inputText },
+        {
+          onSuccess: () => {
+            setOpen(false);
+          },
+        }
+      );
+    }
   };
 
   const handleClose = () => {

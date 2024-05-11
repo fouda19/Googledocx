@@ -127,4 +127,20 @@ public class UserService {
         }
         return false;
     }
+
+    public boolean validToken(String token)
+    {
+        Token tokenObj = new Token();
+        String _id = tokenObj.getIdFromToken(token);
+        Optional<User> userOptional = userRepo.findById(_id);
+        if(userOptional.isPresent())
+        {
+            User user = userOptional.get();
+            if(user.getActiveTokens().contains(token))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
