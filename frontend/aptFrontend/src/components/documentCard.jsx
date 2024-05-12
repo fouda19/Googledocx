@@ -21,27 +21,20 @@ function DocsCard(props) {
   const [popUp, setPopUp] = useState(false);
   const [sharePop, setSharePop] = useState(false);
   const [newFilename, setNewFilename] = useState("");
+  const [filename, setFilename] = useState(props.fileName);
   const [error, setError] = useState("");
-  // const currentUser = "me";
-  // const isOwner = owner === currentUser;
-  // const isEditor = editorList.includes(currentUser);
-  // const isViewer = viewerList.includes(currentUser);
-  // const flagRename = isOwner || isEditor;
-  // const flagDelete = isOwner;
-  // const flagShare = isOwner;
-  const flagRename = true;
-  const flagDelete = true;
-  const flagShare = true;
-  const isViewer = false;
-  const isOwner = true;
-  const isEditor = true;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const renameReq = useMutation((data) =>
-    postRequest("/backend/documents/rename", data)
+    postRequest(`/backend/documents/rename/${newFilename}`, data)
   );
-  const deleteReq = useMutation((data) =>
-    postRequest("/backend/documents/delete", data)
+  const deleteReq = useMutation(
+    (data) => postRequest("/backend/documents/delete", data),
+    {
+      onSuccess: () => {
+        props.refetch();
+      },
+    }
   );
   const navigate = useNavigate();
   const handleClick = (event) => {
@@ -69,13 +62,12 @@ function DocsCard(props) {
       return;
     }
     renameReq.mutate(
-      {
-        filename: newFilename,
-        id: props.id,
-      },
+      props.id,
+
       {
         onSuccess: () => {
           setPopUp(false);
+          setFilename(newFilename);
           setNewFilename("");
         },
       }
@@ -96,10 +88,10 @@ function DocsCard(props) {
     >
       {/* <Icon name="article" size="3xl" color="blue" /> */}
       <ArticleIcon color="primary" />
-      <p className="flex-grow pl-5 w-10 pr-10 truncate">{props.fileName}</p>
+      <p className="flex-grow pl-5 w-10 pr-10 truncate">{filename}</p>
       <p className="flex-grow pl-5 w-10 pr-10 truncate">{props.owner}</p>
       <p className="pr-12 text-sm italic">{date.format("DD/MM/YYYY")}</p>
-      {isViewer ? (
+      {props.isViewer && !props.isEditor && !props.isOwner ? (
         <IconButton style={{ pointerEvents: "none" }}>
           <MoreVertIcon
             style={{ visibility: "hidden", pointerEvents: "none" }}
@@ -123,7 +115,7 @@ function DocsCard(props) {
           e.stopPropagation();
         }}
       >
-        {flagRename && (
+        {(props.isOwner || props.isEditor) && (
           <MenuItem
             onClick={(e) => {
               setPopUp(true);
@@ -134,7 +126,7 @@ function DocsCard(props) {
             Rename
           </MenuItem>
         )}
-        {flagDelete && (
+        {props.isOwner && (
           <MenuItem
             onClick={(e) => {
               handleDelete();
@@ -144,7 +136,7 @@ function DocsCard(props) {
             Delete
           </MenuItem>
         )}
-        {flagShare && (
+        {props.isOwner && (
           <MenuItem
             onClick={(e) => {
               handleShare();
@@ -171,7 +163,9 @@ function DocsCard(props) {
           input={newFilename}
         />
       )}
-      {sharePop && <SharePop open={sharePop} setOpen={setSharePop} />}
+      {sharePop && (
+        <SharePop open={sharePop} setOpen={setSharePop} id={props.id} />
+      )}
     </div>
   );
 }

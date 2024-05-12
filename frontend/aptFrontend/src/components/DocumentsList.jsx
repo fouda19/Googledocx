@@ -26,12 +26,12 @@ function Doclist() {
   const postReq = useMutation((data) =>
     postRequest("/backend/documents/newDocument", data)
   );
-  const { data, isLoading, isError, isSuccess } = useQuery(
+  const { data, isLoading, isError, isSuccess, refetch } = useQuery(
     ["documents", sortParam],
     () => fetchRequest(`/backend/documents/${sortParam}`)
   );
   console.log(data?.data);
-  console.log("AKAKKAKAAKAKKAKAAKAKAKAK");
+
   const handleClick = (event) => {
     console.log("clicked");
     setAnchorEl(event.currentTarget);
@@ -66,6 +66,7 @@ function Doclist() {
       onSuccess: () => {
         setPopUp(false);
         setFilename("");
+        refetch();
       },
     });
   };
@@ -134,11 +135,15 @@ function Doclist() {
             {isSuccess &&
               data?.data.map((doc) => (
                 <DocsCard
-                  key={doc._id}
-                  id={doc._id}
-                  fileName={doc.name}
-                  date={doc.creationDate}
-                  owner={doc.owner.firstName + " " + doc.owner.lastName}
+                  key={doc.doc._id}
+                  id={doc.doc._id}
+                  fileName={doc.doc.name}
+                  date={doc.doc.creationDate}
+                  owner={doc.doc.owner.firstName + " " + doc.doc.owner.lastName}
+                  isOwner={doc.isOwner}
+                  isEditor={doc.isEditor}
+                  isViewer={doc.isViewer}
+                  refetch={refetch}
                 />
               ))}
           </div>

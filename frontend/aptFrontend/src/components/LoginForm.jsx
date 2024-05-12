@@ -3,8 +3,10 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import RoundedButton from "./RoundedButton";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = (props) => {
+  const navigate = useNavigate();
   return (
     <div className="font-roboto">
       <Formik
@@ -64,7 +66,9 @@ const LoginForm = (props) => {
             </div>
             <div className="text-right">
               <RoundedButton
-                type="submit"
+                onClick={() => {
+                  navigate("/signup");
+                }}
                 buttonColor="bg-white"
                 buttonBorderColor="border-white"
                 buttonTextColor="text-customBlue"

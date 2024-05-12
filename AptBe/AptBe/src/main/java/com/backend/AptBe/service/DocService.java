@@ -14,6 +14,7 @@ import java.util.Date;
 import com.backend.AptBe.repo.UserRepo;
 
 
+
 @Service
 public class DocService {
     @Autowired
@@ -28,12 +29,24 @@ public class DocService {
 
     public Doc addDoc (User user,String docName)
     {
-        if(docRepo.existsById(docName))
+        System.out.println("DocName: "+docName);
+        // Remove the quotes from the docName
+        docName = docName.replace("\"", "");
+        System.out.println("DocName: "+docName);
+        System.out.println("User: "+user.get_id());
+        List<Doc> exists = docRepo.findByOwner(user.get_id());
+        System.out.println("Exists: "+exists);
+        if(exists != null && exists.size() > 0)
         {
-           return null;
+            for(Doc doc : exists)
+            {
+                if(doc.getName().equals(docName))
+                {
+                    System.out.println("Doc with this name already exists");
+                    return null;
+                }
+            }
         }
-        else
-        {
             Doc newDoc = new Doc();
             newDoc.setOwner(user);
             Date now = new Date();
@@ -47,7 +60,8 @@ public class DocService {
             } catch (Exception e) {
                 return null;
             }
-        }
+
+        
        
     }
 
@@ -196,9 +210,18 @@ public class DocService {
 
  public boolean renameDoc(String _id, String newName)
 {
-    if(docRepo.existsById(newName))
+    System.out.println("Renaming doc");
+    System.out.println("ID: "+_id);
+    System.out.println("NewName: "+newName);
+    String ownerID = docRepo.findById(_id).get().getOwner().get_id();
+    
+    List<Doc> docs = docRepo.findByOwner(ownerID);
+    for(Doc doc : docs)
     {
-       return false;
+        if(doc.getName().equals(newName))
+        {
+            return false;
+        }
     }
 
     Optional<Doc> docOptional = docRepo.findById(_id);
@@ -217,6 +240,9 @@ public class DocService {
 }
 public boolean shareView(String _id, User user)
 {
+    System.out.println("Sharing view");
+    System.out.println("User: "+user);
+    System.out.println("Doc: "+_id);
     return shareDoc(_id,user,false);
 }
 public boolean shareEdit(String _id, User user)

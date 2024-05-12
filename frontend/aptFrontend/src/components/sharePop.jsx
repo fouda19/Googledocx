@@ -47,23 +47,17 @@ export default function SharePop({ open, setOpen, id }) {
       return;
     }
     if (userType === "Viewer") {
-      shareReqView.mutate(
-        { email: inputText },
-        {
-          onSuccess: () => {
-            setOpen(false);
-          },
-        }
-      );
+      shareReqView.mutate(inputText, {
+        onSuccess: () => {
+          setOpen(false);
+        },
+      });
     } else {
-      shareReqEdit.mutate(
-        { email: inputText },
-        {
-          onSuccess: () => {
-            setOpen(false);
-          },
-        }
-      );
+      shareReqEdit.mutate(inputText, {
+        onSuccess: () => {
+          setOpen(false);
+        },
+      });
     }
   };
 
@@ -78,7 +72,7 @@ export default function SharePop({ open, setOpen, id }) {
     setAnchorEl(event.currentTarget);
   };
   return (
-    <div>
+    <div onClick={(e) => e.stopPropagation()}>
       <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth={true}>
         <DialogTitle>Share</DialogTitle>
         <DialogContent>

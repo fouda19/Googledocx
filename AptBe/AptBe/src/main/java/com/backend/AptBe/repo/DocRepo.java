@@ -14,8 +14,10 @@ import com.backend.AptBe.model.Doc;
 public interface DocRepo extends MongoRepository<Doc,String>{
     
     Optional<Doc> findById(String _id);
+   
 
     boolean existsById(String _id);
+    boolean existsByName(String name);
 
     @Query("{'owner._id': ?0}")
     List<Doc> findByOwner(String _id);
@@ -25,4 +27,7 @@ public interface DocRepo extends MongoRepository<Doc,String>{
 
     @Query("{'viewers._id': ?0}")
     List<Doc> findByViewers(String _id);
+
+    @Query("{'name': ?0, 'owner._id': ?1}")
+    boolean existsByNameAndOwnerId(String name, String ownerId);
 }

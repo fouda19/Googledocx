@@ -7,7 +7,15 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 // eslint-disable-next-line react/prop-types
-export default function PopUp({ open, setOpen, message, handleClick, handleInputChange, input, error }) {
+export default function PopUp({
+  open,
+  setOpen,
+  message,
+  handleClick,
+  handleInputChange,
+  input,
+  error,
+}) {
   // const [open, setOpen] = React.useState(true);
   // const [inputText, setInputText] = React.useState("");
   // const [error, setError] = React.useState("");
@@ -19,7 +27,6 @@ export default function PopUp({ open, setOpen, message, handleClick, handleInput
   // const handleSubmit = () => {
   //   // TODO handle type
 
-
   //   setOpen(false);
   // };
 
@@ -28,7 +35,7 @@ export default function PopUp({ open, setOpen, message, handleClick, handleInput
   };
 
   return (
-    <div>
+    <div onClick={(e) => e.stopPropagation()}>
       <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth={true}>
         <DialogTitle>{message}</DialogTitle>
         <DialogContent>
