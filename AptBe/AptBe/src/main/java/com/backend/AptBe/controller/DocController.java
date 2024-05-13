@@ -184,12 +184,31 @@ public class DocController {
         }
     }
 
-    @GetMapping("/hello")
-    public ResponseEntity<?> hello()
+    @GetMapping("/doc/{docId}")
+    public ResponseEntity<?> getDocById(@PathVariable String docId)
     {
-        return ResponseEntity.ok().body("Hello");
+        Optional<Doc> doc = docService.getDocById(docId);
+        if(doc.isPresent())
+        {
+            return ResponseEntity.ok(doc.get().getContent());
+        }
+        else
+        {
+            return ResponseEntity.badRequest().body("Doc not found");
+        }
     }
 
-
+    @PostMapping("/saveDoc/{docId}")
+    public ResponseEntity<?> saveDoc(@PathVariable String docId, @RequestBody String content)
+    {
+        if(docService.saveDoc(docId, content))
+        {
+            return ResponseEntity.ok().body("Doc saved successfully");
+        }
+        else
+        {
+            return ResponseEntity.badRequest().body("Doc could not be saved");
+        }
+    }
     
 }

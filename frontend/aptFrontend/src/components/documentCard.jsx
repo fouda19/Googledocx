@@ -6,7 +6,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Icon } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import React from "react";
+import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import ArticleIcon from "@mui/icons-material/Article";
 import { useState } from "react";
@@ -23,7 +23,12 @@ function DocsCard(props) {
   const [newFilename, setNewFilename] = useState("");
   const [filename, setFilename] = useState(props.fileName);
   const [error, setError] = useState("");
-
+  const [WebSock, setWebSock] = useState(null);
+  useEffect(() => {
+    if (WebSock) {
+      WebSock.close();
+    }
+  }, []);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const renameReq = useMutation((data) =>
     postRequest(`/backend/documents/rename/${newFilename}`, data)

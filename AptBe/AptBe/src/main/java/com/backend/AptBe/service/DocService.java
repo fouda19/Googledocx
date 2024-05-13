@@ -295,4 +295,26 @@ public List<Doc> getDocs(User user, String sortParam)
     }
 }
 
+public Doc getDoc(String _id)
+{
+    return docRepo.findById(_id).get();
+}
+
+public boolean saveDoc(String _id, String content)
+{
+    Optional<Doc> docOptional = docRepo.findById(_id);
+    if(docOptional.isPresent())
+    {
+        Doc doc = docOptional.get();
+        doc.setContent(content);
+        try {
+            docRepo.save(doc);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    return false;
+}
+
 }
