@@ -210,5 +210,23 @@ public class DocController {
             return ResponseEntity.badRequest().body("Doc could not be saved");
         }
     }
+
+    
+    public ResponseEntity<?> getPermissions(@RequestHeader("Authorization") String token,@PathVariable String docId)
+    {
+        if (userService.validToken(token) == false)
+        {
+            return ResponseEntity.badRequest().body("Invalid token");
+        }
+        User user = userService.getUserById(new Token().getIdFromToken(token)).get();
+        if (user == null)
+        {
+            return ResponseEntity.badRequest().body("Invalid token");
+        }
+
+        
+        Boolean canEdit = docService.getPermissions(docId,user);
+        return ResponseEntity.ok(canEdit.toString());
+    }
     
 }

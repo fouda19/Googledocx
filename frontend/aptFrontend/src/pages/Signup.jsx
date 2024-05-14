@@ -14,7 +14,7 @@ import LoginForm from '../components/LoginForm';
 import googleLogo from '../assets/google-logo.png';
 import SignUpForm from '../components/SignUpForm';
 import { useMutation } from 'react-query';
-import { saveToken } from '../hooks/auth/useSession';
+// import { saveToken } from '../hooks/auth/useSession';
 import { postRequest } from '../API/API';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,7 +35,7 @@ export default function Signup() {
     },
       {
         onSuccess: (data) => {
-          saveToken(data.token)
+          localStorage.setItem("token", data.token);
           navigate('/documents')
         }
       });

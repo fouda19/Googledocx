@@ -12,6 +12,7 @@ import com.backend.AptBe.model.User;
 import org.mindrot.jbcrypt.BCrypt;
 import java.util.Date;
 import com.backend.AptBe.repo.UserRepo;
+import org.json.JSONObject;
 
 
 
@@ -302,6 +303,9 @@ public Doc getDoc(String _id)
 
 public boolean saveDoc(String _id, String content)
 {
+    JSONObject jsonObject = new JSONObject(content);
+    content = jsonObject.getString("content");
+    System.out.println("Content: "+content);    
     Optional<Doc> docOptional = docRepo.findById(_id);
     if(docOptional.isPresent())
     {
@@ -317,4 +321,26 @@ public boolean saveDoc(String _id, String content)
     return false;
 }
 
+public boolean getPermissions(String docId, User user)
+{
+    boolean isViewer = isViewer(docId, user);
+    boolean isEditor = isEditor(docId, user);
+    boolean isOwner = isOwner(docId, user);
+    if (isOwner)
+    {
+        return true;
+    }
+    else if (isEditor)
+    {
+        return true;
+    }
+    else if (isViewer)
+    {
+        return false;
+    }
+    else
+    {
+        return false;
+    }
+}
 }

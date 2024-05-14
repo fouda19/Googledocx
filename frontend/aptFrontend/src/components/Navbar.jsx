@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 // import useSession from "../hooks/auth/useSession";
 import { useMutation } from "react-query";
 import { postRequest } from "../API/API";
-import { removeToken } from "../hooks/auth/useSession";
+// import { removeToken } from "../hooks/auth/useSession";
 
 export default function Navbar() {
   // const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -47,7 +47,7 @@ export default function Navbar() {
                   {},
                   {
                     onSuccess: () => {
-                      removeToken();
+                     localStorage.removeItem("token");
                     },
                   }
                 );

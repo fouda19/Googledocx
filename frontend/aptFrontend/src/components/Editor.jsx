@@ -2,130 +2,125 @@ import React, { useState, useRef, useEffect } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css"; // Import Quill styles
 import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
+import { fetchRequest } from "../API/API";
 let WebSock;
 let oldContent = "";
 let counter = 0;
 let changesQueue = [];
-let editor;
-let docContent = "";
-const Editor = () => {
+let flag = false;
+const Editor = (props) => {
   const quillRef = useRef(null);
   const { documentId } = useParams();
-  const [docContent, setDocContent] = useState("");
-  useEffect(() => {
-    setupWebSocket();
-    if (!quillRef.current) {
-      editor = new Quill("#editor-container", {
-        theme: "snow",
-        placeholder: "Write something...",
-      });
-      quillRef.current = editor;
+  const [canEdit, setCanEdit] = useState(false);
+  const { data } = useQuery("permissions", () =>
+    fetchRequest(`/backend/documents/getPermissions/${documentId}`)
+    , {
+      onSuccess: ()
     }
-    if (docContent) {
-      console.log("DOC", docContent);
-      editor.root.innerHTML = docContent;
-    }
-    
-    if (quillRef.current) {
-      const handleChange = function (delta, oldDelta, source) {
-        console.log("DELTA", delta.ops);
-        let isDelete = false;
-        let isInsert = false;
-        let isBold = false;
-        let isItalic = false;
-        let currentIndex = 0;
-        delta.ops.forEach((operation) => {
-          if (operation.delete) {
-            isDelete = true;
-          }
-          if (operation.retain && !operation.attributes) {
-            currentIndex += operation.retain;
-          }
-          if (operation.insert) {
-            isInsert = true;
-          }
-          if (
-            operation.attributes &&
-            operation.attributes.hasOwnProperty("bold")
-          ) {
-            const boldValue = operation.attributes.bold;
-            if (boldValue == true) {
-              isBold = true;
-            } else if (boldValue == false) {
-              isBold = false;
-            } else {
-              isBold = null;
-            }
-          }
-          if (
-            operation.attributes &&
-            operation.attributes.hasOwnProperty("italic")
-          ) {
-            const val = operation.attributes.italic;
-            if (val == true) {
-              isItalic = true;
-            } else if (val == false) {
-              isItalic = false;
-            } else {
-              isItalic = null;
-            }
-          }
-        });
-        if (source == "user" && source != "api") {
-          handleTextChange(isDelete, isBold, isItalic, isInsert, currentIndex);
-          oldContent = quillRef.current.root.innerHTML;
+  );
+  const handleChange = function (delta, oldDelta, source) {
+    // Delta is the change in the text
+    // OldDelta is the old text
+    // Source is the source of the change
+
+    let isDelete = false;
+    let isInsert = false;
+    let isBold = false;
+    let isItalic = false;
+    let currentIndex = 0;
+    delta.ops.forEach((operation) => {
+      if (operation.delete) {
+        isDelete = true;
+      }
+      if (operation.retain && !operation.attributes) {
+        currentIndex += operation.retain;
+      }
+      if (operation.insert) {
+        isInsert = true;
+      }
+      if (operation.attributes && operation.attributes.hasOwnProperty("bold")) {
+        const boldValue = operation.attributes.bold;
+        if (boldValue == true) {
+          isBold = true;
+        } else if (boldValue == false) {
+          isBold = false;
+        } else {
+          isBold = null;
         }
-      };
+      }
+      if (
+        operation.attributes &&
+        operation.attributes.hasOwnProperty("italic")
+      ) {
+        const val = operation.attributes.italic;
+        if (val == true) {
+          isItalic = true;
+        } else if (val == false) {
+          isItalic = false;
+        } else {
+          isItalic = null;
+        }
+      }
+    });
+    if (source == "user" && source != "api") {
+      handleTextChange(isDelete, isBold, isItalic, isInsert, currentIndex);
+      oldContent = quillRef.current.root.innerHTML;
+    }
+  };
+  useEffect(() => {
+    flag = false;
+    console.log("dkhlt");
+    if (!quillRef.current) {
+      setupWebSocket();
+      console.log("Creating new Quill instance");
+      quillRef.current = new Quill("#editor-container", {
+        theme: "snow",
+        // placeholder: "",
+      });
+      if (props.isViewer) {
+        quillRef.current.disable();
+      }
 
       quillRef.current.on("text-change", handleChange);
-      return () => {
-        if (quillRef.current) {
-          quillRef.current.off("text-change", handleChange);
-        }
-        if (WebSock && WebSock.readyState === WebSocket.OPEN) {
-          WebSock.close();
-          WebSock = null;
-        }
-      };
     }
 
     oldContent = "";
     return () => {
       if (WebSock && WebSock.readyState === WebSocket.OPEN) {
+        console.log("ba2fel");
         WebSock.close();
-      }
-      if (editor) {
-        editor.off("text-change");
-        // editor.removeAllListeners();
-        editor.destroy();
+        WebSock = null;
       }
     };
-  }, [docContent]);
+  }, []);
   function setupWebSocket() {
     console.log("Setting up websocket");
-    const url = `ws://192.168.100.4:3001/editor/${documentId}`;
+    const url = `ws://localhost:3001/editor/${documentId}`;
     WebSock = !WebSock ? new WebSocket(url) : WebSock;
-
+    console.log(WebSock, "WebSock");
     WebSock.onopen = function () {
       console.log("WebSocket connection established");
     };
     WebSock.onmessage = function (event) {
       console.log("Websocket message received");
       let JsonData = JSON.parse(event.data);
+
       console.log(JsonData, "JsonData");
+      counter = JsonData.counter;
+      console.log(counter, "counter");
+
       if (JsonData.type == "init") {
-        // editor.root.innerHTML = JsonData.content;
-        // if (quillRef.current != null) {
-        //   quillRef.current.root.innerHTML = JsonData.content;
-        // }
-        // editor.root.innerHTML = JsonData.content;
-        // quillRef.current = editor;
-        setDocContent(JsonData.content);
-        console.log("DOCzzzzzzz", docContent);
-        console.log("JSON V ABL", counter);
+        if (JsonData.content != null) {
+          if (JsonData.content == "") {
+            flag = true;
+          }
+          JsonData.content = "<p>" + JsonData.content + "</p>";
+          quillRef.current.root.innerHTML = JsonData.content;
+        }
+        // quillRef.current.root.innerHTML = JsonData.content;
         counter = JsonData.counter;
-        console.log("JSON V B3d", counter);
-      } else if (JsonData.type == "ack") {
+      } else if (JsonData.type !== "ack") {
         changesQueue = changesQueue.filter((change) => {
           return !(
             change.index == JsonData.index &&
@@ -153,7 +148,8 @@ const Editor = () => {
       }
       // const data = JSON.parse(event.data);
       // console.log("recieved", data);
-      counter++;
+      // counter++;
+
       oldContent = quillRef.current.root.innerHTML;
     };
 
@@ -247,12 +243,25 @@ const Editor = () => {
       isInsert,
       currentIndex
     );
-    if (changes.length > 0) {
-      console.log("changes", changes);
-      if (WebSock.readyState === WebSocket.OPEN) {
+    //CHANGE
+    // if (!flag) {
+    //   return;
+    // }
+    console.log("flag", flag);
+    console.log("CHANGED", changes);
+    console.log("RANA", WebSock.readyState === WebSocket.OPEN);
+    if (
+      changes.length > 0 &&
+      changes[0].character != null &&
+      changes[0].character != "undefined"
+    ) {
+      console.log(WebSock, "WebSock");
+      if (WebSock.readyState === WebSocket.OPEN && flag) {
+        console.log("changes", changes);
         WebSock.send(JSON.stringify(changes[0]));
       } else {
-        console.error("WebSocket connection is not open.");
+        flag = true;
+        console.log("flag", flag);
       }
 
       changesQueue.push(changes[0]);

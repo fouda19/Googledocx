@@ -14,7 +14,7 @@ import LoginForm from "../components/LoginForm";
 import googleLogo from "../assets/google-logo.png";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { saveToken } from "../hooks/auth/useSession";
+// import { saveToken } from "../hooks/auth/useSession";
 import { postRequest } from "../API/API";
 
 export default function Login() {
@@ -31,7 +31,7 @@ export default function Login() {
           console.log(data);
           console.log(data.token);
           console.log("MIZOO");
-          saveToken(data.token);
+          localStorage.setItem("token", data.token);
           navigate("/documents");
           // location.reload();
         },
