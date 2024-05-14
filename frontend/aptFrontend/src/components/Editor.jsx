@@ -161,8 +161,8 @@ const Editor = (props) => {
           JsonData.isDelete,
           JsonData.isBold,
           JsonData.isItalic,
-          // JsonData.isInsert
-          true
+          JsonData.isInsert
+          // true
         );
       }
       // const data = JSON.parse(event.data);
