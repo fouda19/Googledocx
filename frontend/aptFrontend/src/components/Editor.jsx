@@ -107,7 +107,7 @@ const Editor = (props) => {
   }, [canEdit]);
   function setupWebSocket() {
     console.log("Setting up websocket");
-    const url = `ws://localhost:3001/editor/${documentId}`;
+    const url = `ws://172.20.10.2:3001/editor/${documentId}`;
     WebSock = !WebSock ? new WebSocket(url) : WebSock;
     console.log(WebSock, "WebSock");
     WebSock.onopen = function () {
@@ -118,7 +118,8 @@ const Editor = (props) => {
       let JsonData = JSON.parse(event.data);
 
       console.log(JsonData, "JsonData");
-      counter = JsonData.counter;
+      // counter = JsonData.counter;
+      //EHTAMAL KARSA
       console.log(counter, "counter");
 
       if (JsonData.type == "init") {
@@ -130,8 +131,8 @@ const Editor = (props) => {
           quillRef.current.root.innerHTML = JsonData.content;
         }
         // quillRef.current.root.innerHTML = JsonData.content;
-        counter = JsonData.counter;
-      } else if (JsonData.type !== "ack") {
+        counter = JsonData.counter - 1;
+      } else if (JsonData.type == "ack") {
         changesQueue = changesQueue.filter((change) => {
           return !(
             change.index == JsonData.index &&
@@ -159,7 +160,7 @@ const Editor = (props) => {
       }
       // const data = JSON.parse(event.data);
       // console.log("recieved", data);
-      // counter++;
+      counter++;
 
       oldContent = quillRef.current.root.innerHTML;
     };

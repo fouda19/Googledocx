@@ -280,7 +280,7 @@ public class Socket extends TextWebSocketHandler {
         if (!docSessionsMap.containsKey(documentId)) {
             docSessionsMap.put(documentId, new HashSet<>());
             RestTemplate restTemplate = new RestTemplate();
-            String url = "http://localhost:3003/backend/documents/doc/" + documentId;
+            String url = "http://172.20.10.2:3003/backend/documents/doc/" + documentId;
             response = restTemplate.getForObject(url, String.class);
             docContentTagsList.put(documentId, new ArrayList<>());
             docContentTagsMap.put(documentId, response);
@@ -391,7 +391,7 @@ public class Socket extends TextWebSocketHandler {
         
         if (docSessionsMap.get(documentId).size() == 0){
             RestTemplate restTemplate = new RestTemplate();
-            String url = "http://localhost:3003/backend/documents/saveDoc/" + documentId;
+            String url = "http://172.20.10.2:3003/backend/documents/saveDoc/" + documentId;
             String content = docContentTagsMap.get(documentId);
             // if (content == null) {
             //     content = "-1";

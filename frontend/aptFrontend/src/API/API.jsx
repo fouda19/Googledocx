@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:3003";
+const baseUrl = "http://172.20.10.2:3003";
 
 //const baseUrl = String(process.env.VITE_BASE_URL);
 console.log("baseUrl ", baseUrl);
