@@ -240,7 +240,7 @@ public class Socket extends TextWebSocketHandler {
         {
             if(s.getId() == sessionId)
             {
-                String messageToSend = "{\"type\": \"ack\", \"index\": \"" + indexInt + "\", \"character\": \"" + character + "\", \"counter\": \"" + myCount + "\", \"isDelete\": \"" + isDelete + "\", \"isAck\": \"" + true + "\", \"isBold\": \"" + isBold + "\", \"isItalic\": \"" + isItalic + "\"}";
+                String messageToSend = "{\"type\": \"ack\", \"index\": \"" + indexInt + "\", \"character\": \"" + character + "\", \"counter\": \"" + myCount + "\", \"isDelete\": \"" + isDelete + "\", \"isAck\": \"" + true + "\", \"isBold\": \"" + isBold + "\", \"isItalic\": \"" + isItalic +  "\" , \"isInsert\": \"" + isInsert +"\"}";
                 try {
                     s.sendMessage(new TextMessage(messageToSend));
                     System.out.println("Message sent ACK");
@@ -250,7 +250,7 @@ public class Socket extends TextWebSocketHandler {
             }
             else
             {
-                String messageToSend = "{\"type\": \"update\", \"index\": \"" + indexInt + "\", \"character\": \"" + character + "\", \"counter\": \"" + myCount + "\", \"isDelete\": \"" + isDelete + "\", \"isAck\": \"" + false + "\", \"isBold\": \"" + isBold + "\", \"isItalic\": \"" + isItalic + "\"}";
+                String messageToSend = "{\"type\": \"update\", \"index\": \"" + indexInt + "\", \"character\": \"" + character + "\", \"counter\": \"" + myCount + "\", \"isDelete\": \"" + isDelete + "\", \"isAck\": \"" + false + "\", \"isBold\": \"" + isBold + "\", \"isItalic\": \"" + isItalic +  "\" , \"isInsert\": \"" + isInsert +"\"}";
                 try {
                     s.sendMessage(new TextMessage(messageToSend));
                     System.out.println("Message sent UPDATE");
@@ -286,38 +286,18 @@ public class Socket extends TextWebSocketHandler {
             docContentTagsMap.put(documentId, response);
             docCounterMap.put(documentId, 0);
             docChangesMap.put(documentId, new ArrayList<>());
-        }
-        String content = docContentTagsMap.get(documentId);
-        if (content == null) {
-            content = "";
-            System.out.println("Content is null");
-        }
-        // Document doc = Jsoup.parse(content);
-        // Elements elements = doc.body().children();
 
-        // for (Element element : elements) {
-        //     // If the element has no child elements with tags or only contains text
-        //     if (element.children().isEmpty()) {
-        //         docContentTagsList.get(documentId).add(element.toString());
-        //     } else {
-        //         // If it has nested elements, add the whole element
-        //         docContentTagsList.get(documentId).add(element.outerHtml());
-        //     }
-        // }
+            String content = docContentTagsMap.get(documentId);
+            if (content == null) {
+                content = "";
+                System.out.println("Content is null");
+            }
 
-        // Document doc = Jsoup.parseBodyFragment(content); 
-        // // Parses only the body fragment
-        // Node node = (Node) doc;
-        
-        Document doc = Jsoup.parseBodyFragment(content); // Parse only the body fragment
-        // Elements elements = doc.body().children(); // Get direct children of the body element
+            Document doc = Jsoup.parseBodyFragment(content); // Parse only the body fragment
+            List<Node> nodes = doc.body().childNodes(); // Get all child nodes directly under the body
 
-        // Document doc = Jsoup.parseBodyFragment(html); // Parse only the body fragment
-
-        // Traverse all nodes in the document body using NodeVisitor
-        // Document doc = Jsoup.parseBodyFragment(html); // Correctly parse the fragment
-        List<Node> nodes = doc.body().childNodes(); // Get all child nodes directly under the body
-
+            System.out.println("Contentlll");
+        System.out.println(docContentTagsList.get(documentId));
         for (Node node : nodes) {
             if (node instanceof org.jsoup.nodes.TextNode) {
                 // Handling text nodes
@@ -325,6 +305,7 @@ public class Socket extends TextWebSocketHandler {
                 System.out.println("Text: " + text);
                 if (!text.isEmpty()) {
                     for (int i = 0; i < text.length(); i++) {
+                        System.out.println("Text: " + text.charAt(i));
                         docContentTagsList.get(documentId).add(String.valueOf(text.charAt(i)));
                     }
                     // docContentTagsList.get(documentId).add(text);
@@ -335,26 +316,19 @@ public class Socket extends TextWebSocketHandler {
             }
         }
 
-        // Pattern pattern = Pattern.compile("<.*?>|.");
-     
-        // Matcher matcher = pattern.matcher(content);
-
-        // while (matcher.find()) {
-        //     docContentTagsList.get(documentId).add(matcher.group());
-        // }
+        }
+      
+        String content = docContentTagsMap.get(documentId);
+        if (content == null) {
+            content = "";
+            System.out.println("Content is null");
+        }
         System.out.println("Tags List");
         System.out.println(docContentTagsList.get(documentId));
 
         System.out.println("Content");
         System.out.println(content);
 
-        // Convert content with tags string to list of strings
-     
-
-
-        
-        
-        
         Integer counter = docCounterMap.get(documentId);
         String message = "{\"type\": \"init\", \"content\": \"" + content + "\", \"counter\": \"" + counter + "\"}";        session.sendMessage(new TextMessage(message));
 
@@ -397,6 +371,13 @@ public class Socket extends TextWebSocketHandler {
             //     content = "-1";
 
             // }
+            System.out.println("Contentz,,z,z,z,z,z,,z,z");
+            System.out.println(content);
+            if(content == null)
+            {
+                content = "";
+            }
+            System.out.println(content);
             String contentJsonFormat = "{\"content\": \"" + content + "\"}";
             String response = restTemplate.postForObject(url, contentJsonFormat, String.class);
             System.out.println(response);
@@ -404,6 +385,8 @@ public class Socket extends TextWebSocketHandler {
             docSessionsMap.remove(documentId);
             // docContentMap.remove(documentId);
             docContentTagsList.remove(documentId);
+            //remove the doc id list
+
             docContentTagsMap.remove(documentId);
         }
 

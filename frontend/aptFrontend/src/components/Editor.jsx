@@ -130,6 +130,10 @@ const Editor = (props) => {
           JsonData.content = "<p>" + JsonData.content + "</p>";
           quillRef.current.root.innerHTML = JsonData.content;
         }
+        if (JsonData.content == null) {
+          let tmpContent = "<p></p>";
+          quillRef.current.root.innerHTML = tmpContent;
+        }
         // quillRef.current.root.innerHTML = JsonData.content;
         counter = JsonData.counter - 1;
       } else if (JsonData.type == "ack") {
