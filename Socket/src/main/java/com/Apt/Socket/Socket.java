@@ -151,6 +151,8 @@ public class Socket extends TextWebSocketHandler {
             {
                 tags = "<i>" + tags + "</i>";
             }
+            System.out.println("Index NOWW " + indexInt);
+            System.out.println("Size NOWW " + docContentTagsList.get(documentId).size());
             docContentTagsList.get(documentId).add(indexInt, tags);
             System.out.println("Tags List Insert");
             System.out.println(docContentTagsList.get(documentId));
@@ -319,9 +321,13 @@ public class Socket extends TextWebSocketHandler {
         for (Node node : nodes) {
             if (node instanceof org.jsoup.nodes.TextNode) {
                 // Handling text nodes
-                String text = ((org.jsoup.nodes.TextNode) node).text().trim();
+                String text = ((org.jsoup.nodes.TextNode) node).getWholeText();//shlt trim
+                System.out.println("Text: " + text);
                 if (!text.isEmpty()) {
-                    docContentTagsList.get(documentId).add(text);
+                    for (int i = 0; i < text.length(); i++) {
+                        docContentTagsList.get(documentId).add(String.valueOf(text.charAt(i)));
+                    }
+                    // docContentTagsList.get(documentId).add(text);
                 }
             } else if (node instanceof org.jsoup.nodes.Element) {
                 // Handling element nodes

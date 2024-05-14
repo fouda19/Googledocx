@@ -13,10 +13,18 @@ const Editor = (props) => {
   const quillRef = useRef(null);
   const { documentId } = useParams();
   const [canEdit, setCanEdit] = useState(false);
-  const { data } = useQuery("permissions", () =>
-    fetchRequest(`/backend/documents/getPermissions/${documentId}`)
-    , {
-      onSuccess: ()
+  useQuery(
+    "permissions",
+    () => fetchRequest(`/backend/documents/getPermissions/${documentId}`),
+    {
+      onSuccess: (data) => {
+        console.log("data", data);
+        setCanEdit(data.data);
+      },
+      // onError: (error) => {
+      //   console.log("error", error);
+
+      // }
     }
   );
   const handleChange = function (delta, oldDelta, source) {
@@ -78,10 +86,6 @@ const Editor = (props) => {
         theme: "snow",
         // placeholder: "",
       });
-      if (props.isViewer) {
-        quillRef.current.disable();
-      }
-
       quillRef.current.on("text-change", handleChange);
     }
 
@@ -94,6 +98,13 @@ const Editor = (props) => {
       }
     };
   }, []);
+  useEffect(() => {
+    if (!canEdit) {
+      quillRef.current.disable();
+    } else {
+      quillRef.current.enable();
+    }
+  }, [canEdit]);
   function setupWebSocket() {
     console.log("Setting up websocket");
     const url = `ws://localhost:3001/editor/${documentId}`;
@@ -133,17 +144,17 @@ const Editor = (props) => {
         });
       } else {
         changesQueue.forEach(function (change) {
-          if (data.index > change.index) {
-            data.index = data.index + 1;
+          if (JsonData.index > change.index) {
+            JsonData.index = JsonData.index + 1;
           }
         });
         modifyCharInText(
-          data.index,
-          data.character,
-          data.isDelete,
-          data.isBold,
-          data.isItalic,
-          data.isInsert
+          JsonData.index,
+          JsonData.character,
+          JsonData.isDelete,
+          JsonData.isBold,
+          JsonData.isItalic,
+          JsonData.isInsert
         );
       }
       // const data = JSON.parse(event.data);

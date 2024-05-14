@@ -211,7 +211,7 @@ public class DocController {
         }
     }
 
-    
+    @GetMapping ("/getPermissions/{docId}")
     public ResponseEntity<?> getPermissions(@RequestHeader("Authorization") String token,@PathVariable String docId)
     {
         if (userService.validToken(token) == false)
