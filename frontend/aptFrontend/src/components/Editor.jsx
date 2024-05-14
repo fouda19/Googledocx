@@ -116,7 +116,13 @@ const Editor = (props) => {
     WebSock.onmessage = function (event) {
       console.log("Websocket message received");
       let JsonData = JSON.parse(event.data);
-
+      JsonData.index = parseInt(JsonData.index,10)
+      // JsonData.character = JsonData.character.toString();
+      JsonData.isDelete = JsonData.isDelete == "true";
+      JsonData.isBold = JsonData.isBold == "true";
+      JsonData.isItalic = JsonData.isItalic == "true";
+      JsonData.isInsert = JsonData.isInsert == "true";
+      JsonData.counter = parseInt(JsonData.counter,10)
       console.log(JsonData, "JsonData");
       // counter = JsonData.counter;
       //EHTAMAL KARSA
@@ -155,7 +161,8 @@ const Editor = (props) => {
           JsonData.isDelete,
           JsonData.isBold,
           JsonData.isItalic,
-          JsonData.isInsert
+          // JsonData.isInsert
+          true
         );
       }
       // const data = JSON.parse(event.data);
@@ -190,26 +197,35 @@ const Editor = (props) => {
       quillRef.current.formatText(index, 1, "italic", true);
     } else {
       let text = quillRef.current.root.innerHTML.replace(/<\/?[^>]+(>|$)/g, "");
+      console.log("textt", text);
       let length = text.length;
       let formatsArray = [];
       for (let i = 0; i < length; i++) {
+        console.log('format',quillRef.current.getFormat(i, 1));
         formatsArray.push({
           char: text[i],
           format: quillRef.current.getFormat(i, 1),
         });
       }
+      console.log("isdelete", isDelete);
       if (isDelete) {
         text = text.slice(0, index) + text.slice(index + 1);
         formatsArray.splice(index, 1);
-      } else {
+      } 
+      if(isInsert) {
+        console.log(character, "character");
+        console.log("indexgowa", index);
         text = text.slice(0, index) + character + text.slice(index);
+        console.log(isItalic, isBold, "isItalic, isBold");
         formatsArray.splice(index, 0, {
           format: { italic: isItalic, bold: isBold },
         });
       }
+      console.log("settext", text);
       quillRef.current.setText(text, "api");
       length = text.length;
       for (let i = 0; i < length; i++) {
+        console.log(formatsArray[i].format,'mimi');
         quillRef.current.formatText(i, 1, formatsArray[i].format);
       }
     }
