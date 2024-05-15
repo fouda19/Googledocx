@@ -125,7 +125,17 @@ public class Socket extends TextWebSocketHandler {
             }
             else
             {
-                docContentTagsList.get(documentId).remove(indexInt);
+                System.out.println(docContentTagsList.get(documentId));
+                int removeIndex = indexInt;
+                // docContentTagsList.get(documentId).remove(removeIndex);
+                while (docContentTagsList.get(documentId).size()  < removeIndex) {
+                    removeIndex--;
+                }
+                // removeIndex--;
+                String removedTag = docContentTagsList.get(documentId).remove(removeIndex);
+                System.out.println("Removed tag: " + removedTag);
+                System.out.println("Tags List  AFTER Delete");
+                System.out.println(docContentTagsList.get(documentId));
             }
             // docContentTagsList.get(documentId).remove(indexInt);
             System.out.println("Tags List Delete");
@@ -153,6 +163,9 @@ public class Socket extends TextWebSocketHandler {
             }
             System.out.println("Index NOWW " + indexInt);
             System.out.println("Size NOWW " + docContentTagsList.get(documentId).size());
+            while (docContentTagsList.get(documentId).size() < indexInt) {
+                indexInt--;
+            }
             docContentTagsList.get(documentId).add(indexInt, tags);
             System.out.println("Tags List Insert");
             System.out.println(docContentTagsList.get(documentId));
@@ -280,7 +293,7 @@ public class Socket extends TextWebSocketHandler {
         if (!docSessionsMap.containsKey(documentId)) {
             docSessionsMap.put(documentId, new HashSet<>());
             RestTemplate restTemplate = new RestTemplate();
-            String url = "http://172.20.10.2:3003/backend/documents/doc/" + documentId;
+            String url = "http://172.20.10.3:3003/backend/documents/doc/" + documentId;
             response = restTemplate.getForObject(url, String.class);
             docContentTagsList.put(documentId, new ArrayList<>());
             docContentTagsMap.put(documentId, response);
@@ -365,7 +378,7 @@ public class Socket extends TextWebSocketHandler {
         
         if (docSessionsMap.get(documentId).size() == 0){
             RestTemplate restTemplate = new RestTemplate();
-            String url = "http://172.20.10.2:3003/backend/documents/saveDoc/" + documentId;
+            String url = "http://172.20.10.3:3003/backend/documents/saveDoc/" + documentId;
             String content = docContentTagsMap.get(documentId);
             // if (content == null) {
             //     content = "-1";
